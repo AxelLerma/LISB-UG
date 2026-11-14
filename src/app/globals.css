@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@400;600;700;800&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-ug-navy: #002E5D;
+  --color-ug-institutional: #00468B;
+  --color-ug-gold: #B38E5D;
+  --color-ug-light: #F4F6F9;
+  --color-ug-text: #1E293B;
+  --color-ug-text-secondary: #475569;
+  --color-ug-tech: #0284C7;
+
+  --font-inter: "Inter", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono", monospace;
+
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: #e2e8f0;
+  }
+
+  body {
+    background-color: #FFFFFF;
+    color: #1E293B;
+    font-family: var(--font-inter);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    margin: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .font-montserrat {
+    font-family: var(--font-montserrat);
+  }
+
+  .font-inter {
+    font-family: var(--font-inter);
+  }
+
+  .font-mono {
+    font-family: var(--font-jetbrains-mono);
+  }
+
+  .text-ug-navy {
+    color: #002E5D;
+  }
+
+  .text-ug-institutional {
+    color: #00468B;
+  }
+
+  .text-ug-gold {
+    color: #B38E5D;
+  }
+
+  .text-ug-light {
+    color: #F4F6F9;
+  }
+
+  .text-ug-text {
+    color: #1E293B;
+  }
+
+  .text-ug-text-secondary {
+    color: #475569;
+  }
+
+  .text-ug-tech {
+    color: #0284C7;
+  }
+
+  .bg-ug-navy {
+    background-color: #002E5D;
+  }
+
+  .bg-ug-institutional {
+    background-color: #00468B;
+  }
+
+  .bg-ug-gold {
+    background-color: #B38E5D;
+  }
+
+  .bg-ug-light {
+    background-color: #F4F6F9;
+  }
+
+  .bg-ug-text {
+    background-color: #1E293B;
+  }
+
+  .bg-ug-text-secondary {
+    background-color: #475569;
+  }
+
+  .bg-ug-tech {
+    background-color: #0284C7;
+  }
+
+  .border-ug-gold {
+    border-color: #B38E5D;
+  }
+
+  .border-ug-navy {
+    border-color: #002E5D;
+  }
+
+  .border-dashed {
+    border-style: dashed;
+  }
+
+  .pleca-oro {
+    position: relative;
+  }
+
+  .pleca-oro::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 4rem;
+    height: 4px;
+    background-color: #B38E5D;
+  }
+}
