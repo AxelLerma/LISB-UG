@@ -1,3 +1,8 @@
+import type { LabData } from "@/data/labData";
+
+// Se re-exporta el tipo para que los componentes existentes sigan importándolo de aquí.
+export type { LabData };
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "";
 
 async function handleResponse<T>(response: Response): Promise<T> {
@@ -6,65 +11,6 @@ async function handleResponse<T>(response: Response): Promise<T> {
     throw new Error(errorBody.error || `Error HTTP ${response.status}`);
   }
   return response.json();
-}
-
-export interface LabData {
-  pillars: Array<{
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    badgeLabel: string;
-    color: string;
-  }>;
-  projects: Array<{
-    id: string;
-    title: string;
-    subtitle: string;
-    description: string;
-    image: string;
-    area: "robotica" | "electronica" | "neurociencia";
-    tags: string[];
-    status: "activo" | "completado" | "en-desarrollo";
-    objectives?: string[];
-    hardwareArchitecture?: string;
-    softwareArchitecture?: string;
-    participants?: string[];
-  }>;
-  publications: Array<{
-    id: string;
-    title: string;
-    authors: string[];
-    journal: string;
-    year: number;
-    doi: string;
-    abstract: string;
-    area: "robotica" | "electronica" | "neurociencia";
-    image?: string;
-  }>;
-  infrastructure: Array<{
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    equipment: string[];
-    area: "robotica" | "electronica" | "neurociencia" | "compartido";
-  }>;
-  team: Array<{
-    id: string;
-    name: string;
-    role: string;
-    area: "robotica" | "electronica" | "neurociencia" | "direccion";
-    image: string;
-    email: string;
-    bio: string;
-    researchLines: string[];
-  }>;
-  images: {
-    logo: string;
-    hero: string;
-    default: string;
-  };
 }
 
 export class LabApiClient {

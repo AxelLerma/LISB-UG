@@ -1,116 +1,125 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { LabImageSlot } from "@/components/ui/LabImageSlot";
-
-const navLinks = [
-  { label: "Investigación", href: "#investigacion" },
-  { label: "Proyectos", href: "#proyectos" },
-  { label: "Publicaciones", href: "#publicaciones" },
-  { label: "Infraestructura", href: "#infraestructura" },
-  { label: "Equipo", href: "#equipo" },
-];
+import { LogoMark } from "@/components/ui/LogoMark";
+import { useLab } from "@/context/LabContext";
+import { isExternalLink } from "@/lib/labHelpers";
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { labData } = useLab();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const settings = labData?.settings;
+
+  // Las secciones extra visibles que lo pidan se agregan solas al menú.
+  const customLinks = (labData?.customSections ?? [])
+    .filter((s) => s.visible && s.showInNav && s.title.trim())
+    .map((s) => ({ id: s.id, label: s.title, href: `#${s.id}` }));
+  const links = [...(settings?.navLinks ?? []), ...customLinks];
+
+  const linkProps = (href: string) =>
+    isExternalLink(href) ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
   return (
-    <>
-      <nav
-        className={`fixed top-[3rem] z-50 w-full bg-white transition-all duration-300 ${
-          isScrolled ? "shadow-sm" : ""
-        }`}
-      >
-        <div className="border-b border-b-ug-gold border-[3px]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              {/* Lado izquierdo: Logo + Título */}
-              <div className="flex items-center gap-4">
-                <div className="hidden md:block w-10 h-10 flex-shrink-0">
-                  <LabImageSlot
-                    src="/images/logos/escudo-ug.png"
-                    alt="Escudo Universidad de Guanajuato"
-                    aspectRatio="square"
-                    placeholderLabel="Escudo UG"
-                    className="w-10 h-10"
-                  />
+    <nav className="sticky top-0 z-50 w-full bg-white shadow-sm border-b-[3px] border-[#B38E5D]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-4">
+          {/* Logo + nombre */}
+          <a href="/" className="flex items-center gap-3 min-w-0">
+            {settings && (
+              <>
+                <LogoMark
+                  src={labData?.images.logo}
+                  alt={`Logo de ${settings.labName}`}
+                  className="w-10 h-10"
+                />
+                <div className="hidden sm:block w-0.5 h-8 bg-ug-gold" />
+                <div className="leading-tight min-w-0">
+                  <div className="text-ug-navy font-montserrat font-bold text-base xl:text-xl tracking-tight truncate">
+                    {settings.labName}
+                  </div>
+                  {settings.institutionalSubtitle && (
+                    <div className="hidden sm:block text-xs text-ug-text-secondary tracking-wide truncate">
+                      {settings.institutionalSubtitle}
+                    </div>
+                  )}
                 </div>
-                {/* Línea vertical divisoria dorada */}
-                <div className="hidden md:block w-0.5 h-8 bg-ug-gold" />
-                <div className="text-ug-navy font-montserrat font-bold text-xl tracking-tight">
-                  Laboratorio de Sistemas Bio-inspirados
-                </div>
-              </div>
+              </>
+            )}
+          </a>
 
-              {/* Lado derecho: Enlaces + Botón */}
-              <div className="hidden md:flex items-center gap-8">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    className="text-ug-navy font-medium text-sm hover:text-ug-institutional transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+          {/* Enlaces escritorio */}
+          {settings && (
+            <div className="hidden lg:flex items-center gap-6 shrink-0">
+              {links.map((link) => (
                 <a
-                  href="#contacto"
-                  className="px-5 py-2 bg-ug-navy text-white text-sm font-semibold rounded-md hover:bg-ug-institutional transition-colors"
-                >
-                  Colabora / Únete
-                </a>
-              </div>
-
-              {/* Botón móvil */}
-              <div className="md:hidden">
-                <button
-                  onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                  className="text-ug-navy hover:text-ug-institutional"
-                  aria-label={isMobileMenuOpen ? "Cerrar menú móvil" : "Abrir menú móvil"}
-                  aria-expanded={isMobileMenuOpen}
-                >
-                  {isMobileMenuOpen ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Menú móvil desplegable */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-b border-b-ug-gold border-[3px]">
-            <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
+                  key={link.id}
                   href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-ug-navy text-sm font-medium py-2 hover:text-ug-institutional transition-colors"
+                  {...linkProps(link.href)}
+                  className="text-ug-navy font-medium text-sm hover:text-ug-institutional transition-colors"
                 >
                   {link.label}
                 </a>
               ))}
+              {settings.navButtonLabel && (
+                <a
+                  href={settings.navButtonHref}
+                  {...linkProps(settings.navButtonHref)}
+                  className="px-5 py-2 bg-ug-navy text-white text-sm font-semibold rounded-md hover:bg-ug-institutional transition-colors"
+                >
+                  {settings.navButtonLabel}
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Botón móvil */}
+          <div className="lg:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className="text-ug-navy hover:text-ug-institutional"
+              aria-label={isMobileMenuOpen ? "Cerrar menú móvil" : "Abrir menú móvil"}
+              aria-expanded={isMobileMenuOpen}
+            >
+              {isMobileMenuOpen ? (
+                <X size={24} strokeWidth={2.5} />
+              ) : (
+                <Menu size={24} strokeWidth={2.5} />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Menú móvil desplegable */}
+      {isMobileMenuOpen && settings && (
+        <div className="lg:hidden bg-white border-t border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
+            {links.map((link) => (
               <a
-                href="#contacto"
+                key={link.id}
+                href={link.href}
+                {...linkProps(link.href)}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-ug-navy text-sm font-medium py-2 hover:text-ug-institutional transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+            {settings.navButtonLabel && (
+              <a
+                href={settings.navButtonHref}
+                {...linkProps(settings.navButtonHref)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block px-5 py-3 bg-ug-navy text-white text-sm font-semibold text-center rounded-md hover:bg-ug-institutional transition-colors"
               >
-                Colabora / Únete
+                {settings.navButtonLabel}
               </a>
-            </div>
+            )}
           </div>
-        )}
-      </nav>
-    </>
+        </div>
+      )}
+    </nav>
   );
 }

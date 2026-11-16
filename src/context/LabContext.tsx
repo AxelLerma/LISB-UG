@@ -21,8 +21,11 @@ interface LabContextType {
   token: string | null;
   toast: ToastState;
   adminPanelOpen: boolean;
+  loginOpen: boolean;
   openAdminPanel: () => void;
   closeAdminPanel: () => void;
+  openLoginModal: () => void;
+  closeLoginModal: () => void;
   login: (password: string) => Promise<void>;
   logout: () => void;
   updateLabData: (newData: Partial<LabData>) => Promise<void>;
@@ -40,8 +43,11 @@ const defaultLabContext: LabContextType = {
   token: null,
   toast: null,
   adminPanelOpen: false,
+  loginOpen: false,
   openAdminPanel: () => {},
   closeAdminPanel: () => {},
+  openLoginModal: () => {},
+  closeLoginModal: () => {},
   login: async () => {},
   logout: () => {},
   updateLabData: async () => {},
@@ -64,6 +70,7 @@ export function LabProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
   const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showToast = useCallback(
@@ -105,6 +112,8 @@ export function LabProvider({ children }: { children: ReactNode }) {
 
   const openAdminPanel = useCallback(() => setAdminPanelOpen(true), []);
   const closeAdminPanel = useCallback(() => setAdminPanelOpen(false), []);
+  const openLoginModal = useCallback(() => setLoginOpen(true), []);
+  const closeLoginModal = useCallback(() => setLoginOpen(false), []);
 
   const login = useCallback(
     async (password: string) => {
@@ -112,6 +121,9 @@ export function LabProvider({ children }: { children: ReactNode }) {
         const result = await labApiClient.login(password);
         setToken(result.token);
         setIsAdmin(true);
+        // Entrada directa al editor: se cierra el login y se abre el panel.
+        setLoginOpen(false);
+        setAdminPanelOpen(true);
         showToast("Sesión de administrador iniciada", "success");
       } catch (err: unknown) {
         setIsAdmin(false);
@@ -188,8 +200,11 @@ export function LabProvider({ children }: { children: ReactNode }) {
         token,
         toast,
         adminPanelOpen,
+        loginOpen,
         openAdminPanel,
         closeAdminPanel,
+        openLoginModal,
+        closeLoginModal,
         login,
         logout,
         updateLabData,

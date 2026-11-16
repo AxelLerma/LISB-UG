@@ -1,3 +1,70 @@
+// Modelo de datos y valores de fábrica (semilla) del sitio LISB-UG.
+// Archivo sin hooks: se puede importar desde servidor y, solo como tipo, desde cliente.
+
+export interface LinkItem {
+  id: string;
+  label: string;
+  href: string;
+}
+
+export interface SiteSettings {
+  labName: string;
+  institutionalSubtitle: string;
+  topBarLinks: LinkItem[];
+  topBarRightLabel: string;
+  topBarRightHref: string;
+  navLinks: LinkItem[];
+  navButtonLabel: string;
+  navButtonHref: string;
+}
+
+export type IndicatorSource =
+  | "manual"
+  | "pillars"
+  | "activeProjects"
+  | "publications";
+
+export interface HeroIndicator {
+  id: string;
+  label: string;
+  source: IndicatorSource;
+  value: string;
+}
+
+export interface HeroContent {
+  badge: string;
+  titleLine1: string;
+  titleLine2: string;
+  description: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  caption: string;
+  indicators: HeroIndicator[];
+}
+
+export interface SectionHeading {
+  title: string;
+  subtitle: string;
+}
+
+export interface TeamSectionContent extends SectionHeading {
+  investigatorsTitle: string;
+  postgradTitle: string;
+  postgradText: string;
+  undergradTitle: string;
+  undergradText: string;
+}
+
+export interface SectionsContent {
+  pillars: SectionHeading;
+  projects: SectionHeading;
+  publications: SectionHeading;
+  infrastructure: SectionHeading;
+  team: TeamSectionContent;
+}
+
 export interface Pillar {
   id: string;
   name: string;
@@ -5,6 +72,8 @@ export interface Pillar {
   image: string;
   badgeLabel: string;
   color: string;
+  lines: string[];
+  tags: string[];
 }
 
 export interface Project {
@@ -13,7 +82,7 @@ export interface Project {
   subtitle: string;
   description: string;
   image: string;
-  area: "robotica" | "electronica" | "neurociencia";
+  area: string; // id de un Pillar
   tags: string[];
   status: "activo" | "completado" | "en-desarrollo";
   objectives?: string[];
@@ -29,8 +98,9 @@ export interface Publication {
   journal: string;
   year: number;
   doi: string;
+  pdfUrl?: string;
   abstract: string;
-  area: "robotica" | "electronica" | "neurociencia";
+  area: string; // id de un Pillar
   image?: string;
 }
 
@@ -40,26 +110,72 @@ export interface Infrastructure {
   description: string;
   image: string;
   equipment: string[];
-  area: "robotica" | "electronica" | "neurociencia" | "compartido";
+  area: string; // id de un Pillar o "compartido"
 }
 
 export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  area: "robotica" | "electronica" | "neurociencia" | "direccion";
+  area: string; // id de un Pillar o "direccion"
   image: string;
   email: string;
   bio: string;
   researchLines: string[];
 }
 
+export interface ContactContent {
+  title: string;
+  successTitle: string;
+  successMessage: string;
+  programOptions: string[];
+  infoTitle: string;
+  infoDescription: string;
+  address: string;
+  email: string;
+  phones: string[];
+  website: string;
+  note: string;
+}
+
+export interface FooterContent {
+  description: string;
+  labColumnTitle: string;
+  labLinks: LinkItem[];
+  ugColumnTitle: string;
+  ugLinks: LinkItem[];
+  copyright: string;
+  rightNote: string;
+  bottomStrip: string;
+}
+
+export interface CustomSection {
+  id: string;
+  visible: boolean;
+  showInNav: boolean;
+  title: string;
+  subtitle: string;
+  paragraphs: string[];
+  bullets: string[];
+  image: string;
+  imagePosition: "left" | "right";
+  buttonLabel: string;
+  buttonHref: string;
+  background: "white" | "light";
+}
+
 export interface LabData {
+  settings: SiteSettings;
+  hero: HeroContent;
+  sections: SectionsContent;
   pillars: Pillar[];
   projects: Project[];
   publications: Publication[];
   infrastructure: Infrastructure[];
   team: TeamMember[];
+  contact: ContactContent;
+  footer: FooterContent;
+  customSections: CustomSection[];
   images: {
     logo: string;
     hero: string;
@@ -68,6 +184,94 @@ export interface LabData {
 }
 
 export const labData: LabData = {
+  settings: {
+    labName: "Laboratorio de Sistemas Bio-inspirados",
+    institutionalSubtitle: "Universidad de Guanajuato",
+    topBarLinks: [
+      { id: "top-1", label: "Portal UG", href: "https://www.ugto.mx/" },
+      { id: "top-2", label: "Campus / División", href: "https://www.ugto.mx/" },
+      { id: "top-3", label: "Investigación", href: "#investigacion" },
+      { id: "top-4", label: "Directorio", href: "https://www.ugto.mx/" },
+    ],
+    topBarRightLabel: "ugto.mx",
+    topBarRightHref: "https://www.ugto.mx/",
+    navLinks: [
+      { id: "nav-1", label: "Investigación", href: "#investigacion" },
+      { id: "nav-2", label: "Proyectos", href: "#proyectos" },
+      { id: "nav-3", label: "Publicaciones", href: "#publicaciones" },
+      { id: "nav-4", label: "Infraestructura", href: "#infraestructura" },
+      { id: "nav-5", label: "Equipo", href: "#equipo" },
+    ],
+    navButtonLabel: "Colabora / Únete",
+    navButtonHref: "#contacto",
+  },
+  hero: {
+    badge: "Universidad de Guanajuato • División de Ingenierías",
+    titleLine1: "Sistemas Bio-inspirados",
+    titleLine2: "para la Ciencia y la Tecnología",
+    description:
+      "Investigación de vanguardia en **Robótica**, **Electrónica** y **Neurociencia**. Desarrollamos soluciones tecnológicas basadas en principios biológicos para la rehabilitación, la neuroprótesis y la interacción humano-máquina.",
+    primaryButtonLabel: "Conoce nuestros Proyectos",
+    primaryButtonHref: "#proyectos",
+    secondaryButtonLabel: "Ver Publicaciones",
+    secondaryButtonHref: "#publicaciones",
+    caption:
+      "Prototipo bio-inspirado en fase de pruebas — Laboratorio LISB-UG",
+    indicators: [
+      {
+        id: "ind-1",
+        label: "Áreas de Investigación",
+        source: "pillars",
+        value: "0",
+      },
+      {
+        id: "ind-2",
+        label: "Proyectos Activos",
+        source: "activeProjects",
+        value: "0",
+      },
+      {
+        id: "ind-3",
+        label: "Publicaciones Indexadas",
+        source: "publications",
+        value: "0",
+      },
+    ],
+  },
+  sections: {
+    pillars: {
+      title: "Áreas de Investigación",
+      subtitle:
+        "Los pilares fundamentales que sustentan el quehacer científico del Laboratorio de Sistemas Bio-inspirados.",
+    },
+    projects: {
+      title: "Proyectos de Investigación",
+      subtitle:
+        "Prototipos y líneas de desarrollo tecnológico del laboratorio.",
+    },
+    publications: {
+      title: "Publicaciones Científicas",
+      subtitle:
+        "Investigación indexada en revistas y congresos internacionales",
+    },
+    infrastructure: {
+      title: "Infraestructura y Equipamiento",
+      subtitle:
+        "Laboratorios especializados para el desarrollo de investigación en Robótica, Electrónica y Neurociencia.",
+    },
+    team: {
+      title: "Equipo de Investigación",
+      subtitle:
+        "Profesores, investigadores y estudiantes del Laboratorio de Sistemas Bio-inspirados.",
+      investigatorsTitle: "Investigadores y Profesores UG",
+      postgradTitle: "Posgrado (Tesis / Investigación)",
+      postgradText:
+        "Estudiantes de Maestría y Doctorado desarrollando tesis de investigación en el laboratorio. ¡Contáctanos para conocer las líneas disponibles!",
+      undergradTitle: "Licenciatura (Tesis / Servicio Social)",
+      undergradText:
+        "Estudiantes de Licenciatura en desarrollo de tesis y servicio social. ¡Únete a nuestros proyectos!",
+    },
+  },
   pillars: [
     {
       id: "robotica",
@@ -77,6 +281,13 @@ export const labData: LabData = {
       image: "/images/pillars/robotica.jpg",
       badgeLabel: "Robótica",
       color: "#002E5D",
+      lines: [
+        "Locomoción adaptativa",
+        "Morfología funcional",
+        "Robótica blanda",
+        "Control autónomo inspirado en sistemas biológicos",
+      ],
+      tags: ["Autónomo", "Investigación"],
     },
     {
       id: "electronica",
@@ -86,6 +297,13 @@ export const labData: LabData = {
       image: "/images/pillars/electronica.jpg",
       badgeLabel: "Electrónica",
       color: "#00468B",
+      lines: [
+        "Diseño de hardware y PCBs",
+        "Instrumentación biomédica",
+        "Sensores neuromórficos",
+        "Adquisición de señales (EMG/EEG)",
+      ],
+      tags: ["Embebido", "Investigación"],
     },
     {
       id: "neurociencia",
@@ -95,6 +313,13 @@ export const labData: LabData = {
       image: "/images/pillars/neurociencia.jpg",
       badgeLabel: "Neurociencia",
       color: "#0284C7",
+      lines: [
+        "Procesamiento de señales neuronales",
+        "Redes neuronales de impulsos (SNN)",
+        "Control motor",
+        "Interfaces cerebro-máquina (BCI)",
+      ],
+      tags: ["Neural", "Investigación"],
     },
   ],
   projects: [
@@ -156,7 +381,7 @@ export const labData: LabData = {
         "Soportar control de dispositivos domésticos y ayudas técnicas.",
       ],
       hardwareArchitecture:
-        "Casquete EEG de 64 canales con electrodos activos, amplificadores deinstrumentación de bajo ruido, conversor ADC de 24 bits y transmisión inalámbrica por Wi-Fi.",
+        "Casquete EEG de 64 canales con electrodos activos, amplificadores de instrumentación de bajo ruido, conversor ADC de 24 bits y transmisión inalámbrica por Wi-Fi.",
       softwareArchitecture:
         "Procesamiento en tiempo real con filtros espaciales Common Average Reference, detección de P300 mediante correlación cruzada y interfaz de usuario en React para selección de comandos.",
       participants: ["Dr. Roberto Sánchez", "Dra. Elena Ramírez", "Ing. Patricia Morales"],
@@ -230,14 +455,11 @@ export const labData: LabData = {
       id: "pub-001",
       title:
         "Control Adaptativo de Exosqueletos Basado en Señales EEG para Rehabilitación Neuronal",
-      authors: [
-        "Dr. Carlos Méndez",
-        "Ing. Ana López",
-        "Mtro. Roberto Sánchez",
-      ],
+      authors: ["Dr. Carlos Méndez", "Ing. Ana López", "Mtro. Roberto Sánchez"],
       journal: "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
       year: 2024,
       doi: "10.1109/TNSRE.2024.3405678",
+      pdfUrl: "",
       abstract:
         "Presentamos un sistema de control adaptativo para exosqueletos de rehabilitación que utiliza señales electroencefalográficas para estimar la intención de movimiento del usuario, mejorando la asistencia terapéutica en pacientes con parálisis parcial.",
       area: "neurociencia",
@@ -250,6 +472,7 @@ export const labData: LabData = {
       journal: "Sensors (MDPI)",
       year: 2023,
       doi: "10.3390/s2315.6789",
+      pdfUrl: "",
       abstract:
         "Prototipo de prótesis transradial con control mioeléctrico basado en redes neuronales convolucionales para clasificación de patrones de EMG de superficie, logrando una precisión del 94.2% en la estimación de movimientos de agarre.",
       area: "electronica",
@@ -258,14 +481,11 @@ export const labData: LabData = {
       id: "pub-003",
       title:
         "Interfaz Cerebro-Computadora No Invasiva para Comunicación Asistida en Pacientes con ELA",
-      authors: [
-        "Dr. Roberto Sánchez",
-        "Dra. Elena Ramírez",
-        "Ing. Patricia Morales",
-      ],
+      authors: ["Dr. Roberto Sánchez", "Dra. Elena Ramírez", "Ing. Patricia Morales"],
       journal: "Frontiers in Neuroscience",
       year: 2023,
       doi: "10.3389/fnins.2023.1124567",
+      pdfUrl: "",
       abstract:
         "Sistema BCI basado en EEG de 64 canales con filtrado espacial y clasificación de potenciales P300 para permitir comunicación asistida en pacientes con esclerosis lateral amiotrófica en estado avanzado.",
       area: "neurociencia",
@@ -278,6 +498,7 @@ export const labData: LabData = {
       journal: "Robotics and Autonomous Systems",
       year: 2024,
       doi: "10.1016/j.robot.2024.104567",
+      pdfUrl: "",
       abstract:
         "Desarrollo de un robot móvil diferencial con sistema de navegación autónoma basado en SLAM (Localización y Mapeo Simultáneos) para monitoreo ambiental en zonas de difícil acceso.",
       area: "robotica",
@@ -352,8 +573,7 @@ export const labData: LabData = {
       area: "direccion",
       image: "/images/team/director.jpg",
       email: "carlos.mendez@ugto.mx",
-      bio:
-        "Doctor en Ingeniería Electrónica por el CINVESTAV. Investigador especializado en sistemas de control, robótica y bio-señales con más de 15 años de experiencia en el desarrollo de tecnologías asistivas.",
+      bio: "Doctor en Ingeniería Electrónica por el CINVESTAV. Investigador especializado en sistemas de control, robótica y bio-señales con más de 15 años de experiencia en el desarrollo de tecnologías asistivas.",
       researchLines: [
         "Control adaptativo",
         "Robótica de rehabilitación",
@@ -367,8 +587,7 @@ export const labData: LabData = {
       area: "neurociencia",
       image: "/images/team/elena-ramirez.jpg",
       email: "elena.ramirez@ugto.mx",
-      bio:
-        "Doctora en Neurociencia Computacional por la UNAM. Experta en interfaces cerebro-computadora, procesamiento de señales neuronales y modelado de redes corticales.",
+      bio: "Doctora en Neurociencia Computacional por la UNAM. Experta en interfaces cerebro-computadora, procesamiento de señales neuronales y modelado de redes corticales.",
       researchLines: [
         "Interfaces cerebro-computadora",
         "EEG",
@@ -383,8 +602,7 @@ export const labData: LabData = {
       area: "electronica",
       image: "/images/team/luis-garcia.jpg",
       email: "luis.garcia@ugto.mx",
-      bio:
-        "Ingeniero en Electrónica por la Universidad de Guanajuato. Especialista en diseño de PCB, sistemas embebidos y adquisición de bio-señales para dispositivos médicos.",
+      bio: "Ingeniero en Electrónica por la Universidad de Guanajuato. Especialista en diseño de PCB, sistemas embebidos y adquisición de bio-señales para dispositivos médicos.",
       researchLines: [
         "Electrónica embebida",
         "Adquisición de señales",
@@ -399,8 +617,7 @@ export const labData: LabData = {
       area: "robotica",
       image: "/images/team/roberto-sanchez.jpg",
       email: "roberto.sanchez@ugto.mx",
-      bio:
-        "Maestro en Ciencias en Robótica por el Tecnológico de Monterrey. Especialista en robots móviles, exosqueletos y sistemas autónomos para aplicaciones de monitoreo y asistencia.",
+      bio: "Maestro en Ciencias en Robótica por el Tecnológico de Monterrey. Especialista en robots móviles, exosqueletos y sistemas autónomos para aplicaciones de monitoreo y asistencia.",
       researchLines: [
         "Robots móviles autónomos",
         "Exosqueletos",
@@ -409,6 +626,52 @@ export const labData: LabData = {
       ],
     },
   ],
+  contact: {
+    title: "Contáctanos",
+    successTitle: "¡Mensaje enviado!",
+    successMessage:
+      "Gracias por contactar al Laboratorio de Sistemas Bio-inspirados. Nos comunicaremos contigo a la brevedad.",
+    programOptions: [
+      "Servicio Social UG",
+      "Verano de Investigación UG",
+      "Tesis",
+      "Colaboración Externa",
+    ],
+    infoTitle: "Información de Contacto",
+    infoDescription:
+      "Laboratorio de Sistemas Bio-inspirados (LISB-UG)\nUniversidad de Guanajuato\nDivisión de Ingenierías\nCampus León, Guanajuato, México",
+    address: "División de Ingenierías, UG",
+    email: "lisb-ug@ugto.mx",
+    phones: [],
+    website: "www.ugto.mx",
+    note: "Para estudiantes de la UG y colaboradores externos",
+  },
+  footer: {
+    description:
+      "Laboratorio de Sistemas Bio-inspirados\nUniversidad de Guanajuato",
+    labColumnTitle: "Laboratorio",
+    labLinks: [
+      { id: "fl-1", label: "Inicio", href: "/" },
+      { id: "fl-2", label: "Investigación", href: "#investigacion" },
+      { id: "fl-3", label: "Proyectos", href: "#proyectos" },
+      { id: "fl-4", label: "Publicaciones", href: "#publicaciones" },
+      { id: "fl-5", label: "Infraestructura", href: "#infraestructura" },
+      { id: "fl-6", label: "Equipo", href: "#equipo" },
+      { id: "fl-7", label: "Contacto", href: "#contacto" },
+    ],
+    ugColumnTitle: "Universidad de Guanajuato",
+    ugLinks: [
+      { id: "fu-1", label: "Portal UG", href: "https://www.ugto.mx/" },
+      { id: "fu-2", label: "División de Ingenierías", href: "https://www.ugto.mx/" },
+      { id: "fu-3", label: "Transparencia", href: "https://www.ugto.mx/" },
+      { id: "fu-4", label: "Contacto UG", href: "https://www.ugto.mx/" },
+    ],
+    copyright:
+      "Laboratorio de Sistemas Bio-inspirados - Universidad de Guanajuato. Todos los derechos reservados.",
+    rightNote: "Sitio oficial del LISB-UG • División de Ingenierías",
+    bottomStrip: "Universidad de Guanajuato - Portal Institucional",
+  },
+  customSections: [],
   images: {
     logo: "/images/logo-ugto.svg",
     hero: "/images/hero-lab.jpg",

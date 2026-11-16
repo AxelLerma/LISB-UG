@@ -1,4 +1,119 @@
 {
+  "settings": {
+    "labName": "Laboratorio de Sistemas Bio-inspirados",
+    "institutionalSubtitle": "Universidad de Guanajuato",
+    "topBarLinks": [
+      {
+        "id": "top-1",
+        "label": "Portal UG",
+        "href": "https://www.ugto.mx/"
+      },
+      {
+        "id": "top-2",
+        "label": "Campus / División",
+        "href": "https://www.ugto.mx/"
+      },
+      {
+        "id": "top-3",
+        "label": "Investigación",
+        "href": "#investigacion"
+      },
+      {
+        "id": "top-4",
+        "label": "Directorio",
+        "href": "https://www.ugto.mx/"
+      }
+    ],
+    "topBarRightLabel": "ugto.mx",
+    "topBarRightHref": "https://www.ugto.mx/",
+    "navLinks": [
+      {
+        "id": "nav-1",
+        "label": "Investigación",
+        "href": "#investigacion"
+      },
+      {
+        "id": "nav-2",
+        "label": "Proyectos",
+        "href": "#proyectos"
+      },
+      {
+        "id": "nav-3",
+        "label": "Publicaciones",
+        "href": "#publicaciones"
+      },
+      {
+        "id": "nav-4",
+        "label": "Infraestructura",
+        "href": "#infraestructura"
+      },
+      {
+        "id": "nav-5",
+        "label": "Equipo",
+        "href": "#equipo"
+      }
+    ],
+    "navButtonLabel": "Colabora / Únete",
+    "navButtonHref": "#contacto"
+  },
+  "hero": {
+    "badge": "Universidad de Guanajuato • División de Ingenierías",
+    "titleLine1": "Sistemas Bio-inspirados",
+    "titleLine2": "para la Ciencia y la Tecnología",
+    "description": "Investigación de vanguardia en **Robótica**, **Electrónica** y **Neurociencia**. Desarrollamos soluciones tecnológicas basadas en principios biológicos para la rehabilitación, la neuroprótesis y la interacción humano-máquina.",
+    "primaryButtonLabel": "Conoce nuestros Proyectos",
+    "primaryButtonHref": "#proyectos",
+    "secondaryButtonLabel": "Ver Publicaciones",
+    "secondaryButtonHref": "#publicaciones",
+    "caption": "Prototipo bio-inspirado en fase de pruebas — Laboratorio LISB-UG",
+    "indicators": [
+      {
+        "id": "ind-1",
+        "label": "Áreas de Investigación",
+        "source": "pillars",
+        "value": "0"
+      },
+      {
+        "id": "ind-2",
+        "label": "Proyectos Activos",
+        "source": "activeProjects",
+        "value": "0"
+      },
+      {
+        "id": "ind-3",
+        "label": "Publicaciones Indexadas",
+        "source": "publications",
+        "value": "0"
+      }
+    ]
+  },
+  "sections": {
+    "pillars": {
+      "title": "Áreas de Investigación",
+      "subtitle": "Los pilares fundamentales que sustentan el quehacer científico del Laboratorio de Sistemas Bio-inspirados."
+    },
+    "projects": {
+      "title": "Proyectos de Investigación",
+      "subtitle": "Prototipos y líneas de desarrollo tecnológico del laboratorio."
+    },
+    "publications": {
+      "title": "Publicaciones Científicas",
+      "subtitle": "Investigación indexada en revistas y congresos internacionales"
+    },
+    "infrastructure": {
+      "title": "Infraestructura y Equipamiento",
+      "subtitle": "Laboratorios especializados para el desarrollo de investigación en Robótica, Electrónica y Neurociencia."
+    },
+    "team": {
+      "title": "Equipo de Investigación",
+      "subtitle": "Profesores, investigadores y estudiantes del Laboratorio de Sistemas Bio-inspirados.",
+      "investigatorsTitle": "Investigadores y Profesores UG",
+      "postgradTitle": "Posgrado (Tesis / Investigación)",
+      "postgradText": "Estudiantes de Maestría y Doctorado desarrollando tesis de investigación en el laboratorio. ¡Contáctanos para conocer las líneas disponibles!",
+      "undergradTitle": "Licenciatura (Tesis / Servicio Social)",
+      "undergradText": "Estudiantes de Licenciatura en desarrollo de tesis y servicio social. ¡Únete a nuestros proyectos!"
+    }
+  },
   "pillars": [
     {
       "id": "robotica",
@@ -6,7 +121,17 @@
       "description": "Diseño y desarrollo de sistemas robóticos bio-inspirados para aplicaciones de asistencia, exploración y rehabilitación, integrando sensores, actuadores y algoritmos de control adaptativo.",
       "image": "/images/pillars/robotica.jpg",
       "badgeLabel": "Robótica",
-      "color": "#002E5D"
+      "color": "#002E5D",
+      "lines": [
+        "Locomoción adaptativa",
+        "Morfología funcional",
+        "Robótica blanda",
+        "Control autónomo inspirado en sistemas biológicos"
+      ],
+      "tags": [
+        "Autónomo",
+        "Investigación"
+      ]
     },
     {
       "id": "electronica",
@@ -14,7 +139,17 @@
       "description": "Desarrollo de plataformas electrónicas embebidas, adquisición de bio-señales y circuitos integrados para sistemas inteligentes de bajo consumo y alta precisión.",
       "image": "/images/pillars/electronica.jpg",
       "badgeLabel": "Electrónica",
-      "color": "#00468B"
+      "color": "#00468B",
+      "lines": [
+        "Diseño de hardware y PCBs",
+        "Instrumentación biomédica",
+        "Sensores neuromórficos",
+        "Adquisición de señales (EMG/EEG)"
+      ],
+      "tags": [
+        "Embebido",
+        "Investigación"
+      ]
     },
     {
       "id": "neurociencia",
@@ -22,7 +157,17 @@
       "description": "Estudio de señales neurales, interfaces cerebro-computadora y modelado computacional de procesos cognitivos, aplicado a neuroprótesis y neurofeedback.",
       "image": "/images/pillars/neurociencia.jpg",
       "badgeLabel": "Neurociencia",
-      "color": "#0284C7"
+      "color": "#0284C7",
+      "lines": [
+        "Procesamiento de señales neuronales",
+        "Redes neuronales de impulsos (SNN)",
+        "Control motor",
+        "Interfaces cerebro-máquina (BCI)"
+      ],
+      "tags": [
+        "Neural",
+        "Investigación"
+      ]
     }
   ],
   "projects": [
@@ -365,9 +510,114 @@
       ]
     }
   ],
+  "contact": {
+    "title": "Contáctanos",
+    "successTitle": "¡Mensaje enviado!",
+    "successMessage": "Gracias por contactar al Laboratorio de Sistemas Bio-inspirados. Nos comunicaremos contigo a la brevedad.",
+    "programOptions": [
+      "Servicio Social UG",
+      "Verano de Investigación UG",
+      "Tesis",
+      "Colaboración Externa"
+    ],
+    "infoTitle": "Información de Contacto",
+    "infoDescription": "Laboratorio de Sistemas Bio-inspirados (LISB-UG)\nUniversidad de Guanajuato\nDivisión de Ingenierías\nCampus León, Guanajuato, México",
+    "address": "División de Ingenierías, UG",
+    "email": "lisb-ug@ugto.mx",
+    "phones": [],
+    "website": "www.ugto.mx",
+    "note": "Para estudiantes de la UG y colaboradores externos"
+  },
+  "footer": {
+    "description": "Laboratorio de Sistemas Bio-inspirados\nUniversidad de Guanajuato",
+    "labColumnTitle": "Laboratorio",
+    "labLinks": [
+      {
+        "id": "fl-1",
+        "label": "Inicio",
+        "href": "/"
+      },
+      {
+        "id": "fl-2",
+        "label": "Investigación",
+        "href": "#investigacion"
+      },
+      {
+        "id": "fl-3",
+        "label": "Proyectos",
+        "href": "#proyectos"
+      },
+      {
+        "id": "fl-4",
+        "label": "Publicaciones",
+        "href": "#publicaciones"
+      },
+      {
+        "id": "fl-5",
+        "label": "Infraestructura",
+        "href": "#infraestructura"
+      },
+      {
+        "id": "fl-6",
+        "label": "Equipo",
+        "href": "#equipo"
+      },
+      {
+        "id": "fl-7",
+        "label": "Contacto",
+        "href": "#contacto"
+      }
+    ],
+    "ugColumnTitle": "Universidad de Guanajuato",
+    "ugLinks": [
+      {
+        "id": "fu-1",
+        "label": "Portal UG",
+        "href": "https://www.ugto.mx/"
+      },
+      {
+        "id": "fu-2",
+        "label": "División de Ingenierías",
+        "href": "https://www.ugto.mx/"
+      },
+      {
+        "id": "fu-3",
+        "label": "Transparencia",
+        "href": "https://www.ugto.mx/"
+      },
+      {
+        "id": "fu-4",
+        "label": "Contacto UG",
+        "href": "https://www.ugto.mx/"
+      }
+    ],
+    "copyright": "Laboratorio de Sistemas Bio-inspirados - Universidad de Guanajuato. Todos los derechos reservados.",
+    "rightNote": "Sitio oficial del LISB-UG • División de Ingenierías",
+    "bottomStrip": "Universidad de Guanajuato - Portal Institucional"
+  },
+  "customSections": [
+    {
+      "id": "seccion-mwil42cdf010",
+      "visible": true,
+      "showInNav": true,
+      "title": "Nueva sección",
+      "subtitle": "prueba",
+      "paragraphs": [
+        "Escribe aquí el contenido de la sección."
+      ],
+      "bullets": [
+        "prueba"
+      ],
+      "image": "/images/uploads/1794792550202_laboratorio_cl_nico_blog_versi_n_desktop.png",
+      "imagePosition": "right",
+      "buttonLabel": "imagen de referencia",
+      "buttonHref": "",
+      "background": "light"
+    }
+  ],
   "images": {
     "logo": "/images/logo-ugto.svg",
-    "hero": "/images/hero-lab.jpg",
+    "hero": "/images/uploads/1794792945903_Gemini_Generated_Image_x3gezhx3gezhx3ge.jpg",
     "default": "/images/default-placeholder.jpg"
   }
 }

@@ -1,462 +1,221 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useLab } from "@/context/LabContext";
-import { ImageUploaderField } from "./ImageUploaderField";
-import { Badge } from "@/components/ui/Badge";
+import React, { useCallback, useEffect, useState } from "react";
 import { X } from "lucide-react";
-import type { LabData } from "@/services/labApiClient";
+import { useLab } from "@/context/LabContext";
+import type { LabData } from "@/data/labData";
+import type { PatchFn } from "./fields";
+import { GeneralTab } from "./tabs/GeneralTab";
+import { HeroTab } from "./tabs/HeroTab";
+import { PillarsTab } from "./tabs/PillarsTab";
+import { ProjectsTab } from "./tabs/ProjectsTab";
+import { PublicationsTab } from "./tabs/PublicationsTab";
+import { InfrastructureTab } from "./tabs/InfrastructureTab";
+import { TeamTab } from "./tabs/TeamTab";
+import { ContactTab } from "./tabs/ContactTab";
+import { CustomSectionsTab } from "./tabs/CustomSectionsTab";
 
-type Tab =
+type TabId =
   | "general"
+  | "hero"
   | "pillars"
   | "projects"
   | "publications"
   | "infrastructure"
-  | "team";
+  | "team"
+  | "contact"
+  | "extra";
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "general", label: "General y Hero" },
-  { id: "pillars", label: "Áreas (Pilares)" },
+const TABS: { id: TabId; label: string }[] = [
+  { id: "general", label: "Encabezado y menú" },
+  { id: "hero", label: "Hero principal" },
+  { id: "pillars", label: "Áreas de investigación" },
   { id: "projects", label: "Proyectos" },
   { id: "publications", label: "Publicaciones" },
   { id: "infrastructure", label: "Infraestructura" },
   { id: "team", label: "Equipo" },
+  { id: "contact", label: "Contacto y pie" },
+  { id: "extra", label: "Secciones Extra" },
 ];
 
-interface TabProps {
-  labData: LabData;
-  save: (data: Partial<LabData>) => void;
+function cloneData(data: LabData): LabData {
+  return JSON.parse(JSON.stringify(data)) as LabData;
 }
 
-const inputClass =
-  "w-full px-2 py-1 rounded border border-ug-light text-sm text-ug-text";
-const labelClass = "text-xs font-semibold text-ug-gold uppercase";
-const cardClass =
-  "bg-white border border-ug-light rounded-xl p-6 hover:border-ug-gold transition-colors";
-
 export function AdminDrawer() {
-  // ⚠️ Todos los hooks se llaman siempre y en el mismo orden. Antes había un
-  // `if (typeof window === "undefined") return null;` ANTES de los hooks, lo
-  // que provoca "Invalid hook call" / "Rendered more hooks…" y mismatch de
-  // hidratación. En el servidor `isAdmin` es false, así que este componente
-  // ya devuelve null sin necesidad de ese guard.
-  const { labData, isAdmin, adminPanelOpen, closeAdminPanel, updateLabData } =
-    useLab();
-  const [activeTab, setActiveTab] = useState<Tab>("general");
+  // Todos los hooks se llaman siempre y en el mismo orden, antes de cualquier return.
+  const {
+    labData,
+    isAdmin,
+    adminPanelOpen,
+    closeAdminPanel,
+    updateLabData,
+    resetToDefaults,
+  } = useLab();
+
+  const [activeTab, setActiveTab] = useState<TabId>("general");
+  const [draft, setDraft] = useState<LabData | null>(null);
+  const [baseline, setBaseline] = useState("");
+  const [version, setVersion] = useState(0);
+  const [saving, setSaving] = useState(false);
 
   const open = isAdmin && adminPanelOpen;
+  const dirty = draft !== null && JSON.stringify(draft) !== baseline;
+
+  // El borrador se crea al abrir el panel y se descarta al cerrarlo.
+  useEffect(() => {
+    if (!open) {
+      if (draft !== null) setDraft(null);
+      return;
+    }
+    if (labData && draft === null) {
+      const copy = cloneData(labData);
+      setDraft(copy);
+      setBaseline(JSON.stringify(copy));
+      setVersion((v) => v + 1);
+    }
+  }, [open, labData, draft]);
+
+  const requestClose = useCallback(() => {
+    if (dirty && !window.confirm("Tienes cambios sin guardar. ¿Cerrar de todos modos?")) {
+      return;
+    }
+    closeAdminPanel();
+  }, [dirty, closeAdminPanel]);
 
   // Cerrar con Escape
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeAdminPanel();
+      if (e.key === "Escape") requestClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, closeAdminPanel]);
+  }, [open, requestClose]);
 
-  if (!open || !labData) return null;
+  if (!open || !labData || !draft) return null;
 
-  // updateLabData ya muestra un toast si falla; evitamos rechazos sin capturar.
-  const save = (data: Partial<LabData>) => {
-    updateLabData(data).catch(() => {});
+  const patch: PatchFn = (key, value) => {
+    setDraft((current) => {
+      if (!current) return current;
+      const next =
+        typeof value === "function"
+          ? (value as (prev: LabData[typeof key]) => LabData[typeof key])(current[key])
+          : value;
+      return { ...current, [key]: next } as LabData;
+    });
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateLabData(draft);
+      setBaseline(JSON.stringify(draft));
+    } catch {
+      // updateLabData ya muestra el mensaje de error.
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDiscard = () => {
+    if (!dirty) return;
+    if (!window.confirm("¿Descartar todos los cambios sin guardar?")) return;
+    setDraft(null); // el efecto vuelve a clonar los datos guardados
+  };
+
+  const handleReset = async () => {
+    const ok = window.confirm(
+      "Esto borra TODO lo que has editado y regresa el sitio a los valores originales. ¿Continuar?"
+    );
+    if (!ok) return;
+    try {
+      await resetToDefaults();
+      setDraft(null);
+    } catch {
+      // El mensaje de error ya se muestra.
+    }
   };
 
   return (
     <div
-      className="fixed inset-0 z-60 bg-white shadow-2xl flex flex-col"
+      className="fixed inset-0 z-[60] bg-slate-50 flex flex-col"
       role="dialog"
       aria-modal="true"
       aria-label="Panel de Administración"
     >
-      <div className="bg-ug-navy text-white px-6 py-4 flex items-center justify-between">
-        <h2 className="font-montserrat font-bold text-xl tracking-tight">
-          Panel de Administración LISB-UG
-        </h2>
-        <button
-          onClick={closeAdminPanel}
-          className="text-white/70 hover:text-white transition-colors"
-          aria-label="Cerrar panel"
-        >
-          <X size={24} strokeWidth={2.5} />
-        </button>
+      <div className="bg-ug-navy text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="font-montserrat font-bold text-lg sm:text-xl tracking-tight">
+            Editor del sitio LISB-UG
+          </h2>
+          <p className="text-xs text-white/70">
+            {dirty ? "Tienes cambios sin guardar" : "Todo está guardado"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleDiscard}
+            disabled={!dirty || saving}
+            className="px-3 py-2 border border-white/30 text-white text-sm font-semibold rounded hover:bg-white/10 transition-colors disabled:opacity-40"
+          >
+            Descartar
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!dirty || saving}
+            className="px-4 py-2 bg-ug-gold text-ug-navy text-sm font-bold rounded hover:bg-white transition-colors disabled:opacity-50"
+          >
+            {saving ? "Guardando…" : "Guardar cambios"}
+          </button>
+          <button
+            onClick={requestClose}
+            className="p-2 text-white/70 hover:text-white transition-colors"
+            aria-label="Cerrar editor"
+          >
+            <X size={24} strokeWidth={2.5} />
+          </button>
+        </div>
       </div>
 
-      <div className="flex overflow-x-auto pb-2 border-b border-ug-light/50 scrollbar-hidden -mb-px">
+      <div className="flex overflow-x-auto bg-white border-b border-slate-200">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-6 py-3 text-sm font-medium border-b-2 ${
+            className={`px-5 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
               activeTab === tab.id
                 ? "border-ug-gold text-ug-navy"
                 : "border-transparent text-ug-text-secondary hover:text-ug-navy"
-            } whitespace-nowrap`}
+            }`}
           >
             {tab.label}
           </button>
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
-        {activeTab === "general" && <GeneralTab labData={labData} save={save} />}
-        {activeTab === "pillars" && <PillarsTab labData={labData} save={save} />}
-        {activeTab === "projects" && <ProjectsTab labData={labData} save={save} />}
-        {activeTab === "publications" && (
-          <PublicationsTab labData={labData} save={save} />
-        )}
-        {activeTab === "infrastructure" && (
-          <InfrastructureTab labData={labData} save={save} />
-        )}
-        {activeTab === "team" && <TeamTab labData={labData} save={save} />}
-      </div>
-    </div>
-  );
-}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div key={version} className="max-w-5xl mx-auto">
+          {activeTab === "general" && <GeneralTab data={draft} patch={patch} />}
+          {activeTab === "hero" && <HeroTab data={draft} patch={patch} />}
+          {activeTab === "pillars" && <PillarsTab data={draft} patch={patch} />}
+          {activeTab === "projects" && <ProjectsTab data={draft} patch={patch} />}
+          {activeTab === "publications" && <PublicationsTab data={draft} patch={patch} />}
+          {activeTab === "infrastructure" && (
+            <InfrastructureTab data={draft} patch={patch} />
+          )}
+          {activeTab === "team" && <TeamTab data={draft} patch={patch} />}
+          {activeTab === "contact" && <ContactTab data={draft} patch={patch} />}
+          {activeTab === "extra" && <CustomSectionsTab data={draft} patch={patch} />}
 
-function GeneralTab({ labData, save }: TabProps) {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h3 className="font-montserrat font-bold text-lg text-ug-navy mb-4">
-          Configuración Hero
-        </h3>
-        <ImageUploaderField
-          value={labData.images.hero}
-          onChange={(url) => save({ images: { ...labData.images, hero: url } })}
-          label="Imagen Principal del Hero"
-          aspectRatio="video"
-          placeholderLabel="Fotografía principal del laboratorio"
-        />
-      </div>
-    </div>
-  );
-}
-
-function PillarsTab({ labData, save }: TabProps) {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h3 className="font-montserrat font-bold text-lg text-ug-navy mb-4">
-          Áreas de Investigación
-        </h3>
-        <p className="text-ug-text-secondary text-sm mb-6">
-          Edita las descripciones, sub-líneas y fotos de cada pilar.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {labData.pillars.map((pillar) => (
-            <div key={pillar.id} className={cardClass}>
-              <div className="mb-4">
-                <ImageUploaderField
-                  value={pillar.image}
-                  onChange={(url) =>
-                    save({
-                      pillars: labData.pillars.map((p) =>
-                        p.id === pillar.id ? { ...p, image: url } : p
-                      ),
-                    })
-                  }
-                  label={pillar.name}
-                  aspectRatio="video"
-                  placeholderLabel={`Fotografía de ${pillar.name}`}
-                />
-              </div>
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <label className={labelClass}>Nombre</label>
-                  <input
-                    type="text"
-                    defaultValue={pillar.name}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>Descripción</label>
-                  <textarea
-                    defaultValue={pillar.description}
-                    rows={3}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Badge variant="tech" className="text-xs">
-                    {pillar.badgeLabel}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {pillar.color}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProjectsTab({ labData, save }: TabProps) {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h3 className="font-montserrat font-bold text-lg text-ug-navy mb-4">
-          Proyectos
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {labData.projects.map((project) => (
-            <div key={project.id} className={cardClass}>
-              <div className="mb-4">
-                <ImageUploaderField
-                  value={project.image}
-                  onChange={(url) =>
-                    save({
-                      projects: labData.projects.map((p) =>
-                        p.id === project.id ? { ...p, image: url } : p
-                      ),
-                    })
-                  }
-                  label={project.title}
-                  aspectRatio="video"
-                  placeholderLabel={`Fotografía de ${project.title}`}
-                />
-              </div>
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <label className={labelClass}>Título</label>
-                  <input
-                    type="text"
-                    defaultValue={project.title}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>Área</label>
-                  <select defaultValue={project.area} className={inputClass}>
-                    <option value="robotica">Robótica</option>
-                    <option value="electronica">Electrónica</option>
-                    <option value="neurociencia">Neurociencia</option>
-                  </select>
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>Estado</label>
-                  <select defaultValue={project.status} className={inputClass}>
-                    <option value="activo">Activo</option>
-                    <option value="completado">Completado</option>
-                    <option value="en-desarrollo">En Desarrollo</option>
-                  </select>
-                </div>
-                <Badge variant="tech" className="text-xs mb-2">
-                  {project.status}
-                </Badge>
-                <div className="space-y-1">
-                  <label className={labelClass}>Descripción</label>
-                  <textarea
-                    defaultValue={project.description}
-                    rows={3}
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PublicationsTab({ labData }: TabProps) {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h3 className="font-montserrat font-bold text-lg text-ug-navy mb-4">
-          Publicaciones Científicas
-        </h3>
-        <div className="space-y-6">
-          {labData.publications.map((pub) => (
-            <div key={pub.id} className={cardClass}>
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded bg-ug-navy flex items-center justify-center text-white text-xs font-bold">
-                  {pub.year}
-                </div>
-                <div className="flex-1 space-y-3">
-                  <div className="space-y-1">
-                    <label className={labelClass}>Título</label>
-                    <input
-                      type="text"
-                      defaultValue={pub.title}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className={labelClass}>Autores</label>
-                    <input
-                      type="text"
-                      defaultValue={pub.authors.join(", ")}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className={labelClass}>Revista / Congreso</label>
-                    <input
-                      type="text"
-                      defaultValue={pub.journal}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className={labelClass}>DOI</label>
-                    <input
-                      type="text"
-                      defaultValue={pub.doi}
-                      className={inputClass}
-                    />
-                  </div>
-                  <Badge variant="tech" className="text-xs">
-                    {pub.area}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function InfrastructureTab({ labData, save }: TabProps) {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h3 className="font-montserrat font-bold text-lg text-ug-navy mb-4">
-          Infraestructura y Equipamiento
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {labData.infrastructure.map((infra) => (
-            <div key={infra.id} className={cardClass}>
-              <div className="mb-4">
-                <ImageUploaderField
-                  value={infra.image}
-                  onChange={(url) =>
-                    save({
-                      infrastructure: labData.infrastructure.map((i) =>
-                        i.id === infra.id ? { ...i, image: url } : i
-                      ),
-                    })
-                  }
-                  label={infra.name}
-                  aspectRatio="video"
-                  placeholderLabel={`Fotografía de ${infra.name}`}
-                />
-              </div>
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <label className={labelClass}>Nombre</label>
-                  <input
-                    type="text"
-                    defaultValue={infra.name}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>Descripción</label>
-                  <textarea
-                    defaultValue={infra.description}
-                    rows={3}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>
-                    Equipo (separado por comas)
-                  </label>
-                  <textarea
-                    defaultValue={infra.equipment.join(", ")}
-                    rows={3}
-                    className={inputClass}
-                  />
-                </div>
-                <Badge variant="outline" className="text-xs">
-                  {infra.area}
-                </Badge>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TeamTab({ labData, save }: TabProps) {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h3 className="font-montserrat font-bold text-lg text-ug-navy mb-4">
-          Equipo de Investigación
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {labData.team.map((member) => (
-            <div key={member.id} className={cardClass}>
-              <div className="mb-4">
-                <ImageUploaderField
-                  value={member.image}
-                  onChange={(url) =>
-                    save({
-                      team: labData.team.map((t) =>
-                        t.id === member.id ? { ...t, image: url } : t
-                      ),
-                    })
-                  }
-                  label={member.name}
-                  aspectRatio="square"
-                  placeholderLabel={`Retrato de ${member.name}`}
-                />
-              </div>
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <label className={labelClass}>Nombre</label>
-                  <input
-                    type="text"
-                    defaultValue={member.name}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>Rol</label>
-                  <input
-                    type="text"
-                    defaultValue={member.role}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>Email</label>
-                  <input
-                    type="email"
-                    defaultValue={member.email}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className={labelClass}>
-                    Líneas de Investigación (separado por comas)
-                  </label>
-                  <textarea
-                    defaultValue={member.researchLines.join(", ")}
-                    rows={3}
-                    className={inputClass}
-                  />
-                </div>
-                <Badge variant="outline" className="text-xs">
-                  {member.area}
-                </Badge>
-              </div>
-            </div>
-          ))}
+          <div className="mt-10 pt-6 border-t border-slate-200">
+            <button
+              onClick={handleReset}
+              className="text-sm text-red-600 hover:text-red-700 underline underline-offset-2"
+            >
+              Restaurar el sitio a los valores originales
+            </button>
+          </div>
         </div>
       </div>
     </div>

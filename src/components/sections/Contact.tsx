@@ -1,17 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
+import { Globe, Mail, MapPin, Phone } from "lucide-react";
+import { useLab } from "@/context/LabContext";
 
 export function Contact() {
+  // Todos los hooks van SIEMPRE antes de cualquier `return` condicional.
+  const { labData } = useLab();
   const [formData, setFormData] = useState({
     nombre: "",
     correo: "",
     tipo: "estudiante",
-    programa: "servicio-social",
+    programa: "",
     mensaje: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  if (!labData) {
+    return <section id="contacto" className="bg-white py-20 md:py-32" />;
+  }
+
+  const contact = labData.contact;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -27,7 +37,7 @@ export function Contact() {
     if (!formData.correo.trim()) {
       newErrors.correo = "El correo es obligatorio";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
-      newErrors.correo = "Correo invÃ¡lido";
+      newErrors.correo = "Correo inválido";
     }
     if (!formData.programa.trim()) {
       newErrors.programa = "El programa es obligatorio";
@@ -51,30 +61,24 @@ export function Contact() {
     externo: "Colaborador Externo",
   };
 
-  const programaOptions = [
-    { value: "servicio-social", label: "Servicio Social UG" },
-    { value: "verano-investigacion", label: "Verano de InvestigaciÃ³n UG" },
-    { value: "tesis", label: "Tesis" },
-    { value: "colaboracion", label: "ColaboraciÃ³n Externa" },
-  ];
+  const websiteHref = /^https?:\/\//i.test(contact.website)
+    ? contact.website
+    : `https://${contact.website}`;
 
   return (
-    <section id="contacto" className="bg-white py-20 md:py-32">
+    <section id="contacto" className="bg-white py-20 md:py-32 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div className="space-y-6">
             <h2 className="font-montserrat text-3xl font-bold text-ug-navy">
-              ContÃ¡ctanos
+              {contact.title}
             </h2>
             {submitted ? (
               <div className="bg-ug-light border border-ug-gold rounded-xl p-6 text-center">
                 <h3 className="font-montserrat font-bold text-ug-navy mb-2">
-                  Â¡Mensaje enviado!
+                  {contact.successTitle}
                 </h3>
-                <p className="text-ug-text-secondary">
-                  Gracias por contactar al Laboratorio de Sistemas
-                  Bio-inspirados. Nos comunicaremos contigo a la brevedad.
-                </p>
+                <p className="text-ug-text-secondary">{contact.successMessage}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -89,9 +93,9 @@ export function Contact() {
                       value={formData.nombre}
                       onChange={handleChange}
                       className={`w-full px-4 py-2 rounded border ${
-                        errors.nombre ? "border-red-500" : "border-ug-light"
+                        errors.nombre ? "border-red-500" : "border-slate-300"
                       } focus:ring-2 focus:ring-ug-gold outline-none`}
-                      placeholder="Juan PÃ©rez"
+                      placeholder="Juan Pérez"
                     />
                     {errors.nombre && (
                       <p className="text-red-500 text-xs">{errors.nombre}</p>
@@ -108,7 +112,7 @@ export function Contact() {
                       value={formData.correo}
                       onChange={handleChange}
                       className={`w-full px-4 py-2 rounded border ${
-                        errors.correo ? "border-red-500" : "border-ug-light"
+                        errors.correo ? "border-red-500" : "border-slate-300"
                       } focus:ring-2 focus:ring-ug-gold outline-none`}
                       placeholder="nombre@ugto.mx"
                     />
@@ -126,7 +130,7 @@ export function Contact() {
                     name="tipo"
                     value={formData.tipo}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded border border-ug-light focus:ring-2 focus:ring-ug-gold outline-none"
+                    className="w-full px-4 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-ug-gold outline-none bg-white"
                   >
                     {Object.entries(tipoLabels).map(([key, label]) => (
                       <option key={key} value={key}>
@@ -137,18 +141,21 @@ export function Contact() {
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="programa" className="text-ug-text text-sm font-medium">
-                    Programa de interÃ©s
+                    Programa de interés
                   </label>
                   <select
                     id="programa"
                     name="programa"
                     value={formData.programa}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded border border-ug-light focus:ring-2 focus:ring-ug-gold outline-none"
+                    className={`w-full px-4 py-2 rounded border ${
+                      errors.programa ? "border-red-500" : "border-slate-300"
+                    } focus:ring-2 focus:ring-ug-gold outline-none bg-white`}
                   >
-                    {programaOptions.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
+                    <option value="">Selecciona una opción</option>
+                    {contact.programOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
                       </option>
                     ))}
                   </select>
@@ -167,9 +174,9 @@ export function Contact() {
                     onChange={handleChange}
                     rows={4}
                     className={`w-full px-4 py-2 rounded border ${
-                      errors.mensaje ? "border-red-500" : "border-ug-light"
+                      errors.mensaje ? "border-red-500" : "border-slate-300"
                     } focus:ring-2 focus:ring-ug-gold outline-none`}
-                    placeholder="CuÃ©ntanos sobre tu interÃ©s en el laboratorio..."
+                    placeholder="Cuéntanos sobre tu interés en el laboratorio..."
                   />
                   {errors.mensaje && (
                     <p className="text-red-500 text-xs">{errors.mensaje}</p>
@@ -184,42 +191,65 @@ export function Contact() {
               </form>
             )}
           </div>
+
           {/* Tarjeta lateral */}
           <div className="bg-ug-navy border-t-4 border-t-ug-gold rounded-xl p-8 text-white">
             <h3 className="font-montserrat text-2xl font-bold mb-4">
-              InformaciÃ³n de Contacto
+              {contact.infoTitle}
             </h3>
-            <p className="text-ug-light text-sm leading-relaxed mb-6">
-              Laboratorio de Sistemas Bio-inspirados (LISB-UG)<br />
-              Universidad de Guanajuato<br />
-              DivisiÃ³n de IngenierÃ­as<br />
-              Campus LeÃ³n, Guanajuato, MÃ©xico
+            <p className="text-white/85 text-sm leading-relaxed mb-6 whitespace-pre-line">
+              {contact.infoDescription}
             </p>
             <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="mt-1 w-5 h-5 text-ug-gold">ðŸ“</span>
-                <p className="text-ug-text-secondary text-sm">
-                  DivisiÃ³n de IngenierÃ­as, UG
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="mt-1 w-5 h-5 text-ug-gold">âœ‰ï¸</span>
-                <p className="text-ug-text-secondary text-sm">
-                  lisb-ug@ugto.mx
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="mt-1 w-5 h-5 text-ug-gold">ðŸŒ</span>
-                <p className="text-ug-text-secondary text-sm">
-                  www.ugto.mx
-                </p>
-              </div>
+              {contact.address && (
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 w-5 h-5 text-ug-gold shrink-0" strokeWidth={2} />
+                  <p className="text-white/85 text-sm">{contact.address}</p>
+                </div>
+              )}
+              {contact.email && (
+                <div className="flex items-start gap-3">
+                  <Mail className="mt-0.5 w-5 h-5 text-ug-gold shrink-0" strokeWidth={2} />
+                  <a
+                    href={`mailto:${contact.email}`}
+                    className="text-white/85 text-sm hover:text-white underline underline-offset-2"
+                  >
+                    {contact.email}
+                  </a>
+                </div>
+              )}
+              {contact.phones.map((phone, idx) => (
+                <div key={idx} className="flex items-start gap-3">
+                  <Phone className="mt-0.5 w-5 h-5 text-ug-gold shrink-0" strokeWidth={2} />
+                  <a
+                    href={`tel:${phone.replace(/[^+\d]/g, "")}`}
+                    className="text-white/85 text-sm hover:text-white"
+                  >
+                    {phone}
+                  </a>
+                </div>
+              ))}
+              {contact.website && (
+                <div className="flex items-start gap-3">
+                  <Globe className="mt-0.5 w-5 h-5 text-ug-gold shrink-0" strokeWidth={2} />
+                  <a
+                    href={websiteHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/85 text-sm hover:text-white underline underline-offset-2"
+                  >
+                    {contact.website}
+                  </a>
+                </div>
+              )}
             </div>
-            <div className="mt-8 pt-6 border-t border-white/20">
-              <p className="text-xs text-ug-text-secondary uppercase tracking-wider">
-                Para estudiantes de la UG y colaboradores externos
-              </p>
-            </div>
+            {contact.note && (
+              <div className="mt-8 pt-6 border-t border-white/20">
+                <p className="text-xs text-white/70 uppercase tracking-wider">
+                  {contact.note}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
