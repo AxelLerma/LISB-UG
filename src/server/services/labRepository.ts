@@ -4,13 +4,22 @@ import path from "path";
 import { labData as seedData } from "../../data/labData";
 import type {
   ContactContent,
+  CustomCardItem,
+  CustomSection,
   FooterContent,
   HeroContent,
   LabData,
   Pillar,
   SiteSettings,
+  TeamLevel,
+  TeamMember,
+  TeamSectionContent,
 } from "../../data/labData";
-import { createCustomSection } from "../../lib/labHelpers";
+import {
+  createCustomCard,
+  createCustomSection,
+  newId,
+} from "../../lib/labHelpers";
 
 const STORAGE_DIR = path.resolve(process.cwd(), "src/server/storage");
 const DB_PATH = path.resolve(STORAGE_DIR, "db.json");
@@ -30,7 +39,7 @@ const ALLOWED_KEYS: (keyof LabData)[] = [
   "images",
 ];
 
-// Caracteres de Windows-1252 en 0x80-0x9F (para reparar textos "TecnologÃ­a").
+// Caracteres de Windows-1252 en 0x80-0x9F (para reparar textos con codificación corrupta).
 const CP1252_REVERSE: Record<string, number> = {
   "\u20AC": 0x80,
   "\u201A": 0x82,
@@ -67,6 +76,22 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function str(value: unknown, fallback: string): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function strArr(value: unknown, fallback: string[]): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : fallback;
+}
+
+function isTeamLevel(value: unknown): value is TeamLevel {
+  return (
+    value === "investigadores" || value === "posgrado" || value === "licenciatura"
+  );
 }
 
 function repairMojibake(value: string): string {
@@ -113,6 +138,85 @@ function objectOr<T extends object>(value: unknown, fallback: T): T {
   return isRecord(value) ? ({ ...fallback, ...value } as T) : fallback;
 }
 
+// Sección Equipo: migra los nombres antiguos de campos a los nuevos
+// (investigatorsTitle, postgradTitle/Text, undergradTitle/Text).
+function normalizeTeamSection(
+  raw: unknown,
+  base: TeamSectionContent
+): TeamSectionContent {
+  const r = isRecord(raw) ? raw : {};
+  const pick = (key: keyof TeamSectionContent, legacyKey?: string): string => {
+    const current = r[key];
+    if (typeof current === "string") return current;
+    if (legacyKey && typeof r[legacyKey] === "string") return r[legacyKey] as string;
+    return base[key];
+  };
+  return {
+    title: pick("title"),
+    subtitle: pick("subtitle"),
+    investigadoresTitle: pick("investigadoresTitle", "investigatorsTitle"),
+    investigadoresEmptyText: pick("investigadoresEmptyText"),
+    posgradoTitle: pick("posgradoTitle", "postgradTitle"),
+    posgradoEmptyText: pick("posgradoEmptyText", "postgradText"),
+    licenciaturaTitle: pick("licenciaturaTitle", "undergradTitle"),
+    licenciaturaEmptyText: pick("licenciaturaEmptyText", "undergradText"),
+  };
+}
+
+function normalizeTeamMember(item: Record<string, unknown>): TeamMember {
+  return {
+    id: str(item.id, newId("team")),
+    name: str(item.name, ""),
+    role: str(item.role, ""),
+    area: str(item.area, "direccion"),
+    level: isTeamLevel(item.level) ? item.level : "investigadores",
+    image: str(item.image, ""),
+    email: str(item.email, ""),
+    scholar: str(item.scholar, ""),
+    github: str(item.github, ""),
+    linkedin: str(item.linkedin, ""),
+    bio: str(item.bio, ""),
+    researchLines: strArr(item.researchLines, []),
+  };
+}
+
+function normalizeCard(item: Record<string, unknown>): CustomCardItem {
+  const d = createCustomCard();
+  return {
+    id: str(item.id, d.id),
+    title: str(item.title, ""),
+    subtitle: str(item.subtitle, ""),
+    description: str(item.description, ""),
+    image: str(item.image, ""),
+    bullets: strArr(item.bullets, []),
+    buttonLabel: str(item.buttonLabel, ""),
+    buttonHref: str(item.buttonHref, ""),
+  };
+}
+
+function normalizeCustomSection(item: Record<string, unknown>): CustomSection {
+  const d = createCustomSection();
+  return {
+    id: str(item.id, d.id),
+    visible: typeof item.visible === "boolean" ? item.visible : true,
+    navLabel: str(item.navLabel, ""),
+    layoutType: item.layoutType === "cards" ? "cards" : "editorial",
+    title: str(item.title, ""),
+    subtitle: str(item.subtitle, ""),
+    intro: str(item.intro, ""),
+    paragraphs: strArr(item.paragraphs, []),
+    bullets: strArr(item.bullets, []),
+    image: str(item.image, ""),
+    imagePosition: item.imagePosition === "left" ? "left" : "right",
+    buttonLabel: str(item.buttonLabel, ""),
+    buttonHref: str(item.buttonHref, ""),
+    background: item.background === "light" ? "light" : "white",
+    cards: Array.isArray(item.cards)
+      ? item.cards.filter(isRecord).map(normalizeCard)
+      : [],
+  };
+}
+
 // Completa datos antiguos con los campos nuevos y repara textos corruptos.
 function normalize(raw: unknown): LabData {
   const base = clone(seedData);
@@ -132,6 +236,14 @@ function normalize(raw: unknown): LabData {
     };
   });
 
+  const rawTeam: Record<string, unknown>[] = Array.isArray(r.team)
+    ? r.team.filter(isRecord)
+    : (base.team as unknown as Record<string, unknown>[]);
+
+  const rawCustom: Record<string, unknown>[] = Array.isArray(r.customSections)
+    ? r.customSections.filter(isRecord)
+    : [];
+
   return {
     settings: objectOr<SiteSettings>(r.settings, base.settings),
     hero,
@@ -140,18 +252,16 @@ function normalize(raw: unknown): LabData {
       projects: objectOr(sec.projects, base.sections.projects),
       publications: objectOr(sec.publications, base.sections.publications),
       infrastructure: objectOr(sec.infrastructure, base.sections.infrastructure),
-      team: objectOr(sec.team, base.sections.team),
+      team: normalizeTeamSection(sec.team, base.sections.team),
     },
     pillars,
     projects: arrayOr(r.projects, base.projects),
     publications: arrayOr(r.publications, base.publications),
     infrastructure: arrayOr(r.infrastructure, base.infrastructure),
-    team: arrayOr(r.team, base.team),
+    team: rawTeam.map(normalizeTeamMember),
     contact: objectOr<ContactContent>(r.contact, base.contact),
     footer: objectOr<FooterContent>(r.footer, base.footer),
-    customSections: arrayOr<Record<string, unknown>>(r.customSections, []).map(
-      (item) => ({ ...createCustomSection(), ...item })
-    ) as LabData["customSections"],
+    customSections: rawCustom.map(normalizeCustomSection),
     images: objectOr(r.images, base.images),
   };
 }

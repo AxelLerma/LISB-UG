@@ -12,14 +12,31 @@ export function Navbar() {
 
   const settings = labData?.settings;
 
-  // Las secciones extra visibles que lo pidan se agregan solas al menú.
+  // Toda sección extra visible aparece sola en el menú.
+  // Si tiene "nombre corto" se usa ese; si no, el título.
   const customLinks = (labData?.customSections ?? [])
-    .filter((s) => s.visible && s.showInNav && s.title.trim())
-    .map((s) => ({ id: s.id, label: s.title, href: `#${s.id}` }));
+    .filter((s) => s.visible)
+    .map((s) => ({
+      id: s.id,
+      label: (s.navLabel ?? "").trim() || (s.title ?? "").trim(),
+      href: `#${s.id}`,
+    }))
+    .filter((link) => link.label.length > 0);
   const links = [...(settings?.navLinks ?? []), ...customLinks];
 
   const linkProps = (href: string) =>
     isExternalLink(href) ? { target: "_blank", rel: "noopener noreferrer" } : {};
+
+  // Scroll suave hacia la sección. Si el destino no existe, el navegador actúa normal.
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setIsMobileMenuOpen(false);
+    if (!href.startsWith("#") || href.length < 2) return;
+    const target = document.getElementById(href.slice(1));
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", href);
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white shadow-sm border-b-[3px] border-[#B38E5D]">
@@ -57,6 +74,7 @@ export function Navbar() {
                   key={link.id}
                   href={link.href}
                   {...linkProps(link.href)}
+                  onClick={(e) => handleLinkClick(e, link.href)}
                   className="text-ug-navy font-medium text-sm hover:text-ug-institutional transition-colors"
                 >
                   {link.label}
@@ -66,6 +84,7 @@ export function Navbar() {
                 <a
                   href={settings.navButtonHref}
                   {...linkProps(settings.navButtonHref)}
+                  onClick={(e) => handleLinkClick(e, settings.navButtonHref)}
                   className="px-5 py-2 bg-ug-navy text-white text-sm font-semibold rounded-md hover:bg-ug-institutional transition-colors"
                 >
                   {settings.navButtonLabel}
@@ -101,7 +120,7 @@ export function Navbar() {
                 key={link.id}
                 href={link.href}
                 {...linkProps(link.href)}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => handleLinkClick(e, link.href)}
                 className="block text-ug-navy text-sm font-medium py-2 hover:text-ug-institutional transition-colors"
               >
                 {link.label}
@@ -111,7 +130,7 @@ export function Navbar() {
               <a
                 href={settings.navButtonHref}
                 {...linkProps(settings.navButtonHref)}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => handleLinkClick(e, settings.navButtonHref)}
                 className="block px-5 py-3 bg-ug-navy text-white text-sm font-semibold text-center rounded-md hover:bg-ug-institutional transition-colors"
               >
                 {settings.navButtonLabel}

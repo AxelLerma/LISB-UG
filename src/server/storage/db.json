@@ -107,11 +107,12 @@
     "team": {
       "title": "Equipo de Investigación",
       "subtitle": "Profesores, investigadores y estudiantes del Laboratorio de Sistemas Bio-inspirados.",
-      "investigatorsTitle": "Investigadores y Profesores UG",
-      "postgradTitle": "Posgrado (Tesis / Investigación)",
-      "postgradText": "Estudiantes de Maestría y Doctorado desarrollando tesis de investigación en el laboratorio. ¡Contáctanos para conocer las líneas disponibles!",
-      "undergradTitle": "Licenciatura (Tesis / Servicio Social)",
-      "undergradText": "Estudiantes de Licenciatura en desarrollo de tesis y servicio social. ¡Únete a nuestros proyectos!"
+      "investigadoresTitle": "Investigadores y Profesores UG",
+      "investigadoresEmptyText": "Próximamente presentaremos a los investigadores y profesores del laboratorio.",
+      "posgradoTitle": "Posgrado (Tesis / Investigación)",
+      "posgradoEmptyText": "Estudiantes de Maestría y Doctorado desarrollando tesis de investigación en el laboratorio. ¡Contáctanos para conocer las líneas disponibles!",
+      "licenciaturaTitle": "Licenciatura (Tesis / Servicio Social)",
+      "licenciaturaEmptyText": "Estudiantes de Licenciatura en desarrollo de tesis y servicio social. ¡Únete a nuestros proyectos!"
     }
   },
   "pillars": [
@@ -455,8 +456,12 @@
       "name": "Dr. Carlos Méndez Rodríguez",
       "role": "Director del Laboratorio",
       "area": "direccion",
+      "level": "investigadores",
       "image": "/images/team/director.jpg",
       "email": "carlos.mendez@ugto.mx",
+      "scholar": "",
+      "github": "",
+      "linkedin": "",
       "bio": "Doctor en Ingeniería Electrónica por el CINVESTAV. Investigador especializado en sistemas de control, robótica y bio-señales con más de 15 años de experiencia en el desarrollo de tecnologías asistivas.",
       "researchLines": [
         "Control adaptativo",
@@ -469,8 +474,12 @@
       "name": "Dra. Elena Ramírez Castro",
       "role": "Investigadora Titular - Neurociencia",
       "area": "neurociencia",
+      "level": "investigadores",
       "image": "/images/team/elena-ramirez.jpg",
       "email": "elena.ramirez@ugto.mx",
+      "scholar": "",
+      "github": "",
+      "linkedin": "",
       "bio": "Doctora en Neurociencia Computacional por la UNAM. Experta en interfaces cerebro-computadora, procesamiento de señales neuronales y modelado de redes corticales.",
       "researchLines": [
         "Interfaces cerebro-computadora",
@@ -484,8 +493,12 @@
       "name": "Ing. Luis García Mendoza",
       "role": "Investigador Asociado - Electrónica",
       "area": "electronica",
+      "level": "investigadores",
       "image": "/images/team/luis-garcia.jpg",
       "email": "luis.garcia@ugto.mx",
+      "scholar": "",
+      "github": "",
+      "linkedin": "",
       "bio": "Ingeniero en Electrónica por la Universidad de Guanajuato. Especialista en diseño de PCB, sistemas embebidos y adquisición de bio-señales para dispositivos médicos.",
       "researchLines": [
         "Electrónica embebida",
@@ -499,8 +512,12 @@
       "name": "Mtro. Roberto Sánchez López",
       "role": "Investigador Asociado - Robótica",
       "area": "robotica",
+      "level": "investigadores",
       "image": "/images/team/roberto-sanchez.jpg",
       "email": "roberto.sanchez@ugto.mx",
+      "scholar": "",
+      "github": "",
+      "linkedin": "",
       "bio": "Maestro en Ciencias en Robótica por el Tecnológico de Monterrey. Especialista en robots móviles, exosqueletos y sistemas autónomos para aplicaciones de monitoreo y asistencia.",
       "researchLines": [
         "Robots móviles autónomos",
@@ -599,9 +616,11 @@
     {
       "id": "seccion-mwil42cdf010",
       "visible": true,
-      "showInNav": true,
+      "navLabel": "",
+      "layoutType": "editorial",
       "title": "Nueva sección",
       "subtitle": "prueba",
+      "intro": "",
       "paragraphs": [
         "Escribe aquí el contenido de la sección."
       ],
@@ -612,11 +631,12 @@
       "imagePosition": "right",
       "buttonLabel": "imagen de referencia",
       "buttonHref": "",
-      "background": "light"
+      "background": "light",
+      "cards": []
     }
   ],
   "images": {
-    "logo": "/images/logo-ugto.svg",
+    "logo": "/images/uploads/1794873042199_Gemini_Generated_Image_56mznu56mznu56mz.jpg",
     "hero": "/images/uploads/1794792945903_Gemini_Generated_Image_x3gezhx3gezhx3ge.jpg",
     "default": "/images/default-placeholder.jpg"
   }

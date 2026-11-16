@@ -49,12 +49,14 @@ export interface SectionHeading {
   subtitle: string;
 }
 
+// Textos editables de la sección Equipo (títulos y mensajes cuando un grupo está vacío).
 export interface TeamSectionContent extends SectionHeading {
-  investigatorsTitle: string;
-  postgradTitle: string;
-  postgradText: string;
-  undergradTitle: string;
-  undergradText: string;
+  investigadoresTitle: string;
+  investigadoresEmptyText: string;
+  posgradoTitle: string;
+  posgradoEmptyText: string;
+  licenciaturaTitle: string;
+  licenciaturaEmptyText: string;
 }
 
 export interface SectionsContent {
@@ -113,13 +115,19 @@ export interface Infrastructure {
   area: string; // id de un Pillar o "compartido"
 }
 
+export type TeamLevel = "investigadores" | "posgrado" | "licenciatura";
+
 export interface TeamMember {
   id: string;
   name: string;
   role: string;
   area: string; // id de un Pillar o "direccion"
+  level: TeamLevel; // grupo en el que se muestra en la página
   image: string;
   email: string;
+  scholar: string;
+  github: string;
+  linkedin: string;
   bio: string;
   researchLines: string[];
 }
@@ -149,12 +157,28 @@ export interface FooterContent {
   bottomStrip: string;
 }
 
+// Tarjeta interna de una sección extra con diseño "cards".
+export interface CustomCardItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  bullets: string[];
+  buttonLabel: string;
+  buttonHref: string;
+}
+
+export type CustomLayoutType = "editorial" | "cards";
+
 export interface CustomSection {
   id: string;
   visible: boolean;
-  showInNav: boolean;
+  navLabel: string; // nombre corto para el menú; si está vacío se usa el título
+  layoutType: CustomLayoutType;
   title: string;
-  subtitle: string;
+  subtitle: string; // etiqueta pequeña sobre el título
+  intro: string; // texto introductorio (diseño "cards")
   paragraphs: string[];
   bullets: string[];
   image: string;
@@ -162,6 +186,7 @@ export interface CustomSection {
   buttonLabel: string;
   buttonHref: string;
   background: "white" | "light";
+  cards: CustomCardItem[];
 }
 
 export interface LabData {
@@ -263,12 +288,14 @@ export const labData: LabData = {
       title: "Equipo de Investigación",
       subtitle:
         "Profesores, investigadores y estudiantes del Laboratorio de Sistemas Bio-inspirados.",
-      investigatorsTitle: "Investigadores y Profesores UG",
-      postgradTitle: "Posgrado (Tesis / Investigación)",
-      postgradText:
+      investigadoresTitle: "Investigadores y Profesores UG",
+      investigadoresEmptyText:
+        "Próximamente presentaremos a los investigadores y profesores del laboratorio.",
+      posgradoTitle: "Posgrado (Tesis / Investigación)",
+      posgradoEmptyText:
         "Estudiantes de Maestría y Doctorado desarrollando tesis de investigación en el laboratorio. ¡Contáctanos para conocer las líneas disponibles!",
-      undergradTitle: "Licenciatura (Tesis / Servicio Social)",
-      undergradText:
+      licenciaturaTitle: "Licenciatura (Tesis / Servicio Social)",
+      licenciaturaEmptyText:
         "Estudiantes de Licenciatura en desarrollo de tesis y servicio social. ¡Únete a nuestros proyectos!",
     },
   },
@@ -571,8 +598,12 @@ export const labData: LabData = {
       name: "Dr. Carlos Méndez Rodríguez",
       role: "Director del Laboratorio",
       area: "direccion",
+      level: "investigadores",
       image: "/images/team/director.jpg",
       email: "carlos.mendez@ugto.mx",
+      scholar: "",
+      github: "",
+      linkedin: "",
       bio: "Doctor en Ingeniería Electrónica por el CINVESTAV. Investigador especializado en sistemas de control, robótica y bio-señales con más de 15 años de experiencia en el desarrollo de tecnologías asistivas.",
       researchLines: [
         "Control adaptativo",
@@ -585,8 +616,12 @@ export const labData: LabData = {
       name: "Dra. Elena Ramírez Castro",
       role: "Investigadora Titular - Neurociencia",
       area: "neurociencia",
+      level: "investigadores",
       image: "/images/team/elena-ramirez.jpg",
       email: "elena.ramirez@ugto.mx",
+      scholar: "",
+      github: "",
+      linkedin: "",
       bio: "Doctora en Neurociencia Computacional por la UNAM. Experta en interfaces cerebro-computadora, procesamiento de señales neuronales y modelado de redes corticales.",
       researchLines: [
         "Interfaces cerebro-computadora",
@@ -600,8 +635,12 @@ export const labData: LabData = {
       name: "Ing. Luis García Mendoza",
       role: "Investigador Asociado - Electrónica",
       area: "electronica",
+      level: "investigadores",
       image: "/images/team/luis-garcia.jpg",
       email: "luis.garcia@ugto.mx",
+      scholar: "",
+      github: "",
+      linkedin: "",
       bio: "Ingeniero en Electrónica por la Universidad de Guanajuato. Especialista en diseño de PCB, sistemas embebidos y adquisición de bio-señales para dispositivos médicos.",
       researchLines: [
         "Electrónica embebida",
@@ -615,8 +654,12 @@ export const labData: LabData = {
       name: "Mtro. Roberto Sánchez López",
       role: "Investigador Asociado - Robótica",
       area: "robotica",
+      level: "investigadores",
       image: "/images/team/roberto-sanchez.jpg",
       email: "roberto.sanchez@ugto.mx",
+      scholar: "",
+      github: "",
+      linkedin: "",
       bio: "Maestro en Ciencias en Robótica por el Tecnológico de Monterrey. Especialista en robots móviles, exosqueletos y sistemas autónomos para aplicaciones de monitoreo y asistencia.",
       researchLines: [
         "Robots móviles autónomos",
