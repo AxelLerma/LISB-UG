@@ -16,6 +16,10 @@ export interface Project {
   area: "robotica" | "electronica" | "neurociencia";
   tags: string[];
   status: "activo" | "completado" | "en-desarrollo";
+  objectives?: string[];
+  hardwareArchitecture?: string;
+  softwareArchitecture?: string;
+  participants?: string[];
 }
 
 export interface Publication {
@@ -104,6 +108,16 @@ export const labData: LabData = {
       area: "robotica",
       tags: ["rehabilitación", "exosqueleto", "EEG", "bio-señales"],
       status: "en-desarrollo",
+      objectives: [
+        "Restaurar la funcionalidad de miembros superiores mediante asistencia motora adaptativa.",
+        "Integrar señales EEG para control voluntario del exosqueleto en tiempo real.",
+        "Reducir la fatiga muscular durante sesiones de rehabilitación prolongadas.",
+      ],
+      hardwareArchitecture:
+        "Estructura de fibra de carbono con actuadores neumáticos de baja presión, sensores de flexión en articulaciones y placa de control basada en ESP32.",
+      softwareArchitecture:
+        "Pipeline de procesamiento de señales EEG en Python, filtro de banda pasada 8-30 Hz, clasificación de intención mediante SVM y envío de comandos por Bluetooth BLE.",
+      participants: ["Dr. Carlos Méndez", "Mtro. Roberto Sánchez", "Ing. Ana López"],
     },
     {
       id: "proj-002",
@@ -115,6 +129,16 @@ export const labData: LabData = {
       area: "electronica",
       tags: ["prótesis", "EMG", "mioeléctrica", "machine learning"],
       status: "activo",
+      objectives: [
+        "Desarrollar prótesis transhumeral controlada por patrones de EMG de superficie.",
+        "Implementar clasificación de movimientos mediante machine learning embebido.",
+        "Lograr respuesta en tiempo real menor a 200 ms para control natural.",
+      ],
+      hardwareArchitecture:
+        "Socket impreso en 3D con resina biocompatible, 6 electrodos EMG de superficie, actuadores lineales en codo y muñeca, y microcontrolador ARM Cortex-M4 con conversor ADC de 16 bits.",
+      softwareArchitecture:
+        "Firmware en FreeRTOS con adquisición de EMG a 1 kHz, filtrado de banda pasada 20-450 Hz, extracción de características RMS y clasificación con red neuronal ligera en TensorFlow Lite Micro.",
+      participants: ["Dra. Elena Ramírez", "Ing. Luis García", "Dr. Carlos Méndez"],
     },
     {
       id: "proj-003",
@@ -126,6 +150,16 @@ export const labData: LabData = {
       area: "neurociencia",
       tags: ["BCI", "EEG", "interfaz cerebro-computadora", "neurofeedback"],
       status: "activo",
+      objectives: [
+        "Permitir comunicación asistida mediante señales EEG de alta densidad.",
+        "Implementar detección de potenciales P300 para selección de comandos.",
+        "Soportar control de dispositivos domésticos y ayudas técnicas.",
+      ],
+      hardwareArchitecture:
+        "Casquete EEG de 64 canales con electrodos activos, amplificadores deinstrumentación de bajo ruido, conversor ADC de 24 bits y transmisión inalámbrica por Wi-Fi.",
+      softwareArchitecture:
+        "Procesamiento en tiempo real con filtros espaciales Common Average Reference, detección de P300 mediante correlación cruzada y interfaz de usuario en React para selección de comandos.",
+      participants: ["Dr. Roberto Sánchez", "Dra. Elena Ramírez", "Ing. Patricia Morales"],
     },
     {
       id: "proj-004",
@@ -137,6 +171,16 @@ export const labData: LabData = {
       area: "robotica",
       tags: ["robot móvil", "autónomo", "LiDAR", "monitoreo ambiental"],
       status: "completado",
+      objectives: [
+        "Desarrollar plataforma robótica autónoma para monitoreo de ecosistemas.",
+        "Integrar sensores multispectrales para análisis de vegetación y calidad del aire.",
+        "Navegación autónoma basada en SLAM en entornos no estructurados.",
+      ],
+      hardwareArchitecture:
+        "Chasis diferencial con ruedas de tracción total, sensor LiDAR 2D de 360°, cámara multiespectral, estación meteorológica integrada y computadora de a bordo NVIDIA Jetson Nano.",
+      softwareArchitecture:
+        "Sistema operativo Ubuntu con ROS 2 Humble, paquete de navegación SLAM (gmapping), procesamiento de imágenes multiespectrales en OpenCV y tablero de control web en Node.js.",
+      participants: ["Ing. Luis García", "Dr. Carlos Méndez", "Mtro. Javier Cortés"],
     },
     {
       id: "proj-005",
@@ -148,6 +192,16 @@ export const labData: LabData = {
       area: "electronica",
       tags: ["ECG", "PPG", "bio-señales", "ADC 24 bits", "BLE"],
       status: "activo",
+      objectives: [
+        "Adquirir señales ECG y PPG de alta fidelidad simultáneamente.",
+        "Implementar filtrado adaptativo para eliminación de artefactos de movimiento.",
+        "Transmitir datos inalámbricamente mediante BLE a dispositivo móvil.",
+      ],
+      hardwareArchitecture:
+        "Front-end analógico con amplificadores de instrumentación, filtros pasa-bajo y pasa-alto, convertidor ADC de 24 bits, microcontrolador nRF52840 con BLE integrado y electrodos de gel seco.",
+      softwareArchitecture:
+        "Firmware embebido en C++ con adquisición a 500 Hz, filtro de mediana y pasa-banda, algoritmo de detección de picos QRS y aplicación complementaria en Flutter para visualización.",
+      participants: ["Ing. Luis García", "Dra. Elena Ramírez"],
     },
     {
       id: "proj-006",
@@ -159,6 +213,16 @@ export const labData: LabData = {
       area: "neurociencia",
       tags: ["redes neuronales", "modelado computacional", "corteza cerebral", "plasticidad"],
       status: "en-desarrollo",
+      objectives: [
+        "Simular patrones de actividad cortical en tiempo real mediante redes spiking.",
+        "Estudiar plasticidad sináptica bajo diferentes protocolos de estimulación.",
+        "Validar modelos contra datos experimentales de registros intracorticales.",
+      ],
+      hardwareArchitecture:
+        "Clúster de computación con nodos GPU NVIDIA RTX 4090, almacenamiento NAS de 100 TB y interconexión de 10 GbE para simulaciones a gran escala.",
+      softwareArchitecture:
+        "Simulador de redes spiking en Brian2/Python, visualización de raster plots y mapas de calor en Plotly, y API REST en FastAPI para acceso remoto a resultados.",
+      participants: ["Dra. Elena Ramírez", "Dr. Carlos Méndez", "Mtro. Roberto Sánchez"],
     },
   ],
   publications: [

@@ -1,8 +1,12 @@
-declare module "*.css";
-
 import type { Metadata } from "next";
 import { Inter, Montserrat, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { TopBar } from "@/components/layout/TopBar";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { AdminBar } from "@/components/admin/AdminBar";
+import { AdminDrawer } from "@/components/admin/AdminDrawer";
+import { LabProvider } from "@/context/LabContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,7 +54,14 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={`${inter.variable} ${montserrat.variable} ${jetbrainsMono.variable} antialiased`}>
-        {children}
+        <LabProvider>
+          <TopBar />
+          <Navbar />
+          {children}
+          <Footer />
+          <AdminBar />
+          <AdminDrawer />
+        </LabProvider>
       </body>
     </html>
   );

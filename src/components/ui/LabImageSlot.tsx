@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Image as ImageIcon } from "lucide-react";
 
@@ -29,8 +31,10 @@ export function LabImageSlot({
   return (
     <div
       className={`relative overflow-hidden rounded-xl border-2 border-dashed border-ug-gold bg-ug-light ${ASPECT_RATIO_CLASSES[aspectRatio]} ${className ?? ""}`}
+      aria-label={placeholderLabel ?? "Contenedor de imagen"}
     >
       {!shouldShowPlaceholder ? (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={src!}
           alt={alt}
@@ -41,13 +45,8 @@ export function LabImageSlot({
         />
       ) : (
         <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-          <div
-            className="w-12 h-12 rounded-full bg-ug-gold/10 flex items-center justify-center mb-3 border border-ug-gold/30"
-          >
-            <ImageIcon
-              className="w-6 h-6 text-ug-gold"
-              strokeWidth={2}
-            />
+          <div className="w-12 h-12 rounded-full bg-ug-gold/10 flex items-center justify-center mb-3 border border-ug-gold/30">
+            <ImageIcon className="w-6 h-6 text-ug-gold" strokeWidth={2} />
           </div>
           <p className="text-sm font-medium text-ug-navy mb-1">
             {placeholderLabel ?? "Imagen no disponible"}
