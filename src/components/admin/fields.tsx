@@ -31,7 +31,7 @@ export interface TabProps {
 // ---------------------------------------------------------------------------
 
 export const baseInputClass =
-  "px-3 py-2 rounded border border-slate-300 text-sm text-ug-text bg-white focus:ring-2 focus:ring-ug-gold focus:border-ug-gold outline-none";
+  "min-w-0 px-3 py-2 rounded border border-slate-300 dark:border-ug-line text-sm text-ug-text bg-white dark:bg-ug-slate placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-ug-gold focus:border-ug-gold outline-none";
 export const inputClass = `w-full ${baseInputClass}`;
 
 export const PILLAR_COLORS = [
@@ -90,12 +90,14 @@ export function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block space-y-1">
-      <span className="block text-xs font-semibold text-ug-gold uppercase tracking-wide">
+    <label className="block space-y-1 min-w-0">
+      <span className="block text-xs font-semibold text-ug-gold dark:text-ug-gold-bright uppercase tracking-wide break-words">
         {label}
       </span>
       {children}
-      {hint && <span className="block text-xs text-ug-text-secondary">{hint}</span>}
+      {hint && (
+        <span className="block text-xs text-ug-text-secondary break-words">{hint}</span>
+      )}
     </label>
   );
 }
@@ -250,7 +252,7 @@ export function ToggleField({
   hint?: string;
 }) {
   return (
-    <div className="flex items-start gap-3">
+    <div className="flex items-start gap-3 min-w-0">
       <button
         type="button"
         role="switch"
@@ -258,7 +260,7 @@ export function ToggleField({
         aria-label={label}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors ${
-          checked ? "bg-ug-navy" : "bg-slate-300"
+          checked ? "bg-ug-navy dark:bg-ug-gold" : "bg-slate-300 dark:bg-slate-600"
         }`}
       >
         <span
@@ -267,9 +269,11 @@ export function ToggleField({
           }`}
         />
       </button>
-      <div>
-        <span className="block text-sm font-medium text-ug-text">{label}</span>
-        {hint && <span className="block text-xs text-ug-text-secondary">{hint}</span>}
+      <div className="min-w-0">
+        <span className="block text-sm font-medium text-ug-text break-words">{label}</span>
+        {hint && (
+          <span className="block text-xs text-ug-text-secondary break-words">{hint}</span>
+        )}
       </div>
     </div>
   );
@@ -289,11 +293,13 @@ export function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="bg-white border border-slate-200 rounded-xl p-5 space-y-4">
+    <section className="bg-white dark:bg-ug-surface border border-slate-200 dark:border-ug-line rounded-xl p-4 sm:p-5 space-y-4 min-w-0">
       <div>
-        <h3 className="font-montserrat font-bold text-lg text-ug-navy">{title}</h3>
+        <h3 className="font-montserrat font-bold text-lg text-ug-navy dark:text-ug-sky-soft break-words">
+          {title}
+        </h3>
         {description && (
-          <p className="text-sm text-ug-text-secondary mt-1">{description}</p>
+          <p className="text-sm text-ug-text-secondary mt-1 break-words">{description}</p>
         )}
       </div>
       {children}
@@ -321,10 +327,10 @@ export function IconButton({
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className={`p-1.5 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+      className={`shrink-0 p-2 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
         danger
-          ? "text-red-600 hover:bg-red-50"
-          : "text-ug-text-secondary hover:bg-white hover:text-ug-navy"
+          ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+          : "text-ug-text-secondary hover:bg-white hover:text-ug-navy dark:hover:bg-ug-surface dark:hover:text-ug-sky-soft"
       }`}
     >
       {children}
@@ -343,7 +349,7 @@ export function AddButton({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-2 px-4 py-2 bg-ug-navy text-white text-sm font-semibold rounded hover:bg-ug-institutional transition-colors"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-ug-navy text-white dark:bg-ug-gold dark:text-ug-night text-sm font-semibold rounded hover:bg-ug-institutional dark:hover:bg-ug-gold-bright transition-colors"
     >
       <Plus size={16} strokeWidth={2.5} />
       {label}
@@ -377,8 +383,8 @@ export function ItemCard({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-      <div className="flex items-center gap-1 px-3 py-2 bg-ug-light">
+    <div className="bg-white dark:bg-ug-surface border border-slate-200 dark:border-ug-line rounded-xl overflow-hidden min-w-0">
+      <div className="flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 py-2 bg-ug-light dark:bg-ug-slate">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -386,12 +392,12 @@ export function ItemCard({
           className="flex-1 min-w-0 flex items-center gap-2 text-left px-1 py-1"
         >
           {open ? (
-            <ChevronUp size={16} className="shrink-0 text-ug-navy" />
+            <ChevronUp size={16} className="shrink-0 text-ug-navy dark:text-ug-sky-soft" />
           ) : (
-            <ChevronDown size={16} className="shrink-0 text-ug-navy" />
+            <ChevronDown size={16} className="shrink-0 text-ug-navy dark:text-ug-sky-soft" />
           )}
           <span className="min-w-0">
-            <span className="block font-semibold text-ug-navy text-sm truncate">
+            <span className="block font-semibold text-ug-navy dark:text-ug-sky-soft text-sm truncate">
               {title || "Sin título"}
             </span>
             {subtitle && (
@@ -412,7 +418,7 @@ export function ItemCard({
           <Trash2 size={16} />
         </IconButton>
       </div>
-      {open && <div className="p-4 space-y-4">{children}</div>}
+      {open && <div className="p-3 sm:p-4 space-y-4">{children}</div>}
     </div>
   );
 }
@@ -429,7 +435,7 @@ export function LinkListEditor({
 }) {
   return (
     <div className="space-y-2">
-      <span className="block text-xs font-semibold text-ug-gold uppercase tracking-wide">
+      <span className="block text-xs font-semibold text-ug-gold dark:text-ug-gold-bright uppercase tracking-wide">
         {label}
       </span>
       {items.length === 0 && (
@@ -484,7 +490,7 @@ export function LinkListEditor({
             { id: newId("link"), label: "Nuevo enlace", href: "#" },
           ])
         }
-        className="inline-flex items-center gap-1 text-sm font-semibold text-ug-institutional hover:text-ug-navy"
+        className="inline-flex items-center gap-1 text-sm font-semibold text-ug-institutional dark:text-ug-sky hover:text-ug-navy dark:hover:text-ug-sky-soft"
       >
         <Plus size={14} strokeWidth={2.5} />
         Agregar enlace

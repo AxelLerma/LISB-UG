@@ -53,17 +53,17 @@ export function AdminBar() {
       {/* Diálogo de acceso (se abre desde el enlace del Footer) */}
       {loginOpen && (
         <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm p-4"
           onClick={closeLoginModal}
         >
           <div
-            className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl border border-ug-gold/30"
+            className="bg-white dark:bg-ug-surface rounded-xl p-5 sm:p-6 max-w-md w-full shadow-2xl border border-ug-gold/30 dark:border-ug-line"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label="Acceso de administración"
           >
-            <h2 className="font-montserrat text-xl font-bold text-ug-navy mb-4 flex items-center gap-2">
+            <h2 className="font-montserrat text-lg sm:text-xl font-bold text-ug-navy dark:text-ug-sky-soft mb-4 flex items-center gap-2">
               <LogIn size={20} strokeWidth={2.5} />
               Acceso de Administración
             </h2>
@@ -80,15 +80,17 @@ export function AdminBar() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 rounded border border-slate-300 text-ug-text focus:ring-2 focus:ring-ug-gold outline-none"
+                  className="w-full min-w-0 px-3 py-2 rounded border border-slate-300 dark:border-ug-line bg-white dark:bg-ug-slate text-ug-text placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-ug-gold outline-none"
                   placeholder="Ingresa la contraseña"
                   autoFocus
                 />
               </div>
-              {loginError && <p className="text-sm text-red-500">{loginError}</p>}
+              {loginError && (
+                <p className="text-sm text-red-500 dark:text-red-400">{loginError}</p>
+              )}
               <button
                 type="submit"
-                className="w-full py-2 bg-ug-navy text-white text-sm font-medium rounded hover:bg-ug-institutional transition-colors disabled:opacity-50"
+                className="w-full py-2 bg-ug-navy text-white dark:bg-ug-gold dark:text-ug-night text-sm font-medium rounded hover:bg-ug-institutional dark:hover:bg-ug-gold-bright transition-colors disabled:opacity-50"
                 disabled={!password || submitting}
               >
                 {submitting ? "Verificando…" : "Entrar al editor"}
@@ -96,7 +98,7 @@ export function AdminBar() {
             </form>
             <button
               onClick={closeLoginModal}
-              className="mt-4 text-sm text-ug-text-secondary hover:text-ug-navy"
+              className="mt-4 text-sm text-ug-text-secondary hover:text-ug-navy dark:hover:text-ug-gold-bright"
             >
               Cancelar
             </button>
@@ -106,13 +108,13 @@ export function AdminBar() {
 
       {/* Barra flotante discreta: solo existe con sesión de administrador activa */}
       {isAdmin && !adminPanelOpen && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-ug-navy text-white rounded-full shadow-lg pl-4 pr-2 py-2 border border-ug-gold">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-[calc(100vw-1rem)] flex items-center gap-2 bg-ug-navy dark:bg-ug-surface text-white rounded-full shadow-lg pl-4 pr-2 py-2 border border-ug-gold dark:border-ug-gold/70">
           <span className="hidden sm:inline text-xs font-semibold tracking-wide uppercase">
             Modo administrador
           </span>
           <button
             onClick={openAdminPanel}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-ug-gold text-ug-navy text-xs font-bold rounded-full hover:bg-white transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-ug-gold text-ug-navy dark:text-ug-night text-xs font-bold rounded-full hover:bg-white transition-colors"
           >
             <Edit3 size={14} strokeWidth={2.5} />
             Abrir editor
@@ -131,8 +133,8 @@ export function AdminBar() {
       {toast && (
         <div
           role="status"
-          className={`fixed bottom-20 right-4 z-[90] max-w-xs px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${
-            toast.type === "error" ? "bg-red-600" : "bg-ug-navy"
+          className={`fixed bottom-20 left-4 right-4 sm:left-auto sm:right-4 z-[90] sm:max-w-xs px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white break-words ${
+            toast.type === "error" ? "bg-red-600" : "bg-ug-navy dark:bg-ug-surface dark:border dark:border-ug-gold/50"
           }`}
         >
           {toast.message}

@@ -1,6 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@400;600;700;800&display=swap");
+/* Las fuentes (Inter, Montserrat, JetBrains Mono) se cargan con <link> en src/app/layout.tsx. */
 
 @import "tailwindcss";
+
+/* Modo oscuro por clase (Tailwind v4): se activa con <html class="dark"> */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-ug-navy: #002E5D;
@@ -11,6 +14,17 @@
   --color-ug-text-secondary: #475569;
   --color-ug-tech: #0284C7;
 
+  /* Paleta oscura institucional */
+  --color-ug-night: #090D16;
+  --color-ug-slate: #0F172A;
+  --color-ug-surface: #162032;
+  --color-ug-line: #1E293B;
+  --color-ug-gold-bright: #D4AF37;
+  --color-ug-sky: #38BDF8;
+  --color-ug-sky-soft: #93C5FD;
+  --color-ug-ink: #F8FAFC;
+  --color-ug-ink-soft: #CBD5E1;
+
   --font-inter: "Inter", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
   --font-jetbrains-mono: "JetBrains Mono", monospace;
@@ -19,17 +33,36 @@
 }
 
 @layer base {
+  /* En modo oscuro, los tokens de texto y de fondo alterno cambian solos. */
+  .dark {
+    color-scheme: dark;
+    --color-ug-text: #F8FAFC;
+    --color-ug-text-secondary: #CBD5E1;
+    --color-ug-light: #0F172A;
+  }
+
   * {
     box-sizing: border-box;
     border-color: #e2e8f0;
   }
 
+  .dark * {
+    border-color: #1E293B;
+  }
+
   body {
     background-color: #FFFFFF;
-    color: #1E293B;
+    color: var(--color-ug-text);
     font-family: var(--font-inter);
     font-feature-settings: "rlig" 1, "calt" 1;
     margin: 0;
+    /* Evita scroll horizontal en celulares sin romper el Navbar sticky. */
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  .dark body {
+    background-color: #090D16;
   }
 
   html {
@@ -37,6 +70,11 @@
   }
 }
 
+/*
+  Importante: aquí ya NO se redefinen .text-ug-navy, .bg-ug-gold, etc.
+  Tailwind v4 las genera desde @theme, y duplicarlas en @layer utilities
+  hacía que ganaran sobre las variantes dark:.
+*/
 @layer utilities {
   .font-montserrat {
     font-family: var(--font-montserrat);
@@ -48,74 +86,6 @@
 
   .font-mono {
     font-family: var(--font-jetbrains-mono);
-  }
-
-  .text-ug-navy {
-    color: #002E5D;
-  }
-
-  .text-ug-institutional {
-    color: #00468B;
-  }
-
-  .text-ug-gold {
-    color: #B38E5D;
-  }
-
-  .text-ug-light {
-    color: #F4F6F9;
-  }
-
-  .text-ug-text {
-    color: #1E293B;
-  }
-
-  .text-ug-text-secondary {
-    color: #475569;
-  }
-
-  .text-ug-tech {
-    color: #0284C7;
-  }
-
-  .bg-ug-navy {
-    background-color: #002E5D;
-  }
-
-  .bg-ug-institutional {
-    background-color: #00468B;
-  }
-
-  .bg-ug-gold {
-    background-color: #B38E5D;
-  }
-
-  .bg-ug-light {
-    background-color: #F4F6F9;
-  }
-
-  .bg-ug-text {
-    background-color: #1E293B;
-  }
-
-  .bg-ug-text-secondary {
-    background-color: #475569;
-  }
-
-  .bg-ug-tech {
-    background-color: #0284C7;
-  }
-
-  .border-ug-gold {
-    border-color: #B38E5D;
-  }
-
-  .border-ug-navy {
-    border-color: #002E5D;
-  }
-
-  .border-dashed {
-    border-style: dashed;
   }
 
   .pleca-oro {

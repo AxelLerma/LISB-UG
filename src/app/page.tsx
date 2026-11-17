@@ -8,14 +8,14 @@ import { CustomSections } from "@/components/sections/CustomSections";
 import { ClientContact } from "@/components/sections/ClientContact";
 
 // Server Component: sin "use client" y sin `export const dynamic`.
-// El <LabProvider> y el <Footer> ya están en app/layout.tsx.
+// El <LabProvider>, el <ThemeProvider> y el <Footer> ya están en app/layout.tsx.
 // Los datos se cargan en el cliente (LabProvider → useEffect → /api/lab),
 // por eso la página se puede prerenderizar sin problemas en `next build`.
 // Las "Secciones Extra" creadas desde el panel admin se dibujan entre el
 // Equipo y el Contacto, en el orden en que aparecen en el editor.
 export default function Page() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen overflow-x-hidden bg-white dark:bg-ug-night">
       <Hero />
       <Pillars />
       <Projects />

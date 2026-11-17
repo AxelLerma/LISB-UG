@@ -11,32 +11,37 @@ import type { CustomSection } from "@/data/labData";
 const linkProps = (href: string) =>
   isExternalLink(href) ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
+const primaryButton =
+  "inline-block px-6 py-3 bg-ug-navy text-white dark:bg-ug-gold dark:text-ug-night text-sm font-semibold rounded-md hover:bg-ug-institutional dark:hover:bg-ug-gold-bright transition-colors break-words";
+
 // Tipo 1: bloque editorial (título, párrafos, lista, imagen y botón opcionales).
 function EditorialBlock({ section }: { section: CustomSection }) {
   const hasImage = Boolean(section.image);
 
   const content = (
-    <div className="space-y-5">
+    <div className="space-y-5 min-w-0">
       {section.subtitle && (
-        <p className="text-xs font-semibold text-ug-gold uppercase tracking-wider">
+        <p className="text-xs font-semibold text-ug-gold dark:text-ug-gold-bright uppercase tracking-wider break-words">
           {section.subtitle}
         </p>
       )}
-      <h2 className="font-montserrat text-2xl md:text-3xl font-bold text-ug-navy tracking-tight">
+      <h2 className="font-montserrat text-2xl md:text-3xl font-bold text-ug-navy dark:text-ug-sky-soft tracking-tight break-words">
         {section.title}
       </h2>
-      <div className="w-16 h-1 bg-ug-gold rounded-full" />
+      <div className="w-16 h-1 bg-ug-gold dark:bg-ug-gold-bright rounded-full" />
       {section.paragraphs.map((paragraph, idx) => (
-        <p key={idx} className="text-ug-text-secondary text-base md:text-lg leading-relaxed">
+        <p key={idx} className="text-ug-text-secondary text-base md:text-lg leading-relaxed break-words">
           <RichText text={paragraph} />
         </p>
       ))}
       {section.bullets.length > 0 && (
         <ul className="space-y-2">
           {section.bullets.map((bullet, idx) => (
-            <li key={idx} className="flex items-start gap-2 text-ug-text text-sm md:text-base">
-              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-ug-gold shrink-0" />
-              <RichText text={bullet} />
+            <li key={idx} className="flex items-start gap-2 text-ug-text text-sm md:text-base break-words">
+              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-ug-gold dark:bg-ug-gold-bright shrink-0" />
+              <span className="min-w-0">
+                <RichText text={bullet} />
+              </span>
             </li>
           ))}
         </ul>
@@ -46,7 +51,7 @@ function EditorialBlock({ section }: { section: CustomSection }) {
           <a
             href={section.buttonHref}
             {...linkProps(section.buttonHref)}
-            className="inline-block px-6 py-3 bg-ug-navy text-white text-sm font-semibold rounded-md hover:bg-ug-institutional transition-colors"
+            className={primaryButton}
           >
             {section.buttonLabel}
           </a>
@@ -60,11 +65,11 @@ function EditorialBlock({ section }: { section: CustomSection }) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
       <div className={section.imagePosition === "left" ? "lg:order-2" : ""}>
         {content}
       </div>
-      <div className={section.imagePosition === "left" ? "lg:order-1" : ""}>
+      <div className={`min-w-0 ${section.imagePosition === "left" ? "lg:order-1" : ""}`}>
         <LabImageSlot
           src={section.image}
           alt={section.title}
@@ -82,17 +87,17 @@ function CardsBlock({ section }: { section: CustomSection }) {
   return (
     <div>
       {section.subtitle && (
-        <p className="text-xs font-semibold text-ug-gold uppercase tracking-wider mb-3">
+        <p className="text-xs font-semibold text-ug-gold dark:text-ug-gold-bright uppercase tracking-wider mb-3 break-words">
           {section.subtitle}
         </p>
       )}
       <SectionHeader title={section.title} subtitle={section.intro} />
       {section.cards.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-10 md:mt-12">
           {section.cards.map((card) => (
             <article
               key={card.id}
-              className="group flex flex-col bg-white border border-slate-200 border-t-4 border-t-ug-gold rounded-xl overflow-hidden transition-all duration-300 hover:border-t-ug-navy hover:shadow-lg hover:-translate-y-1"
+              className="group flex flex-col min-w-0 bg-white dark:bg-ug-surface border border-slate-200 dark:border-ug-line border-t-4 border-t-ug-gold dark:border-t-ug-gold-bright rounded-xl overflow-hidden transition-all duration-300 hover:border-t-ug-navy dark:hover:border-t-ug-sky hover:shadow-lg hover:-translate-y-1"
             >
               {card.image && (
                 <div className="relative aspect-video">
@@ -105,17 +110,17 @@ function CardsBlock({ section }: { section: CustomSection }) {
                   />
                 </div>
               )}
-              <div className="flex flex-col flex-1 p-6">
+              <div className="flex flex-col flex-1 p-5 sm:p-6">
                 {card.subtitle && (
-                  <p className="text-xs font-semibold text-ug-gold uppercase tracking-wider mb-2">
+                  <p className="text-xs font-semibold text-ug-gold dark:text-ug-gold-bright uppercase tracking-wider mb-2 break-words">
                     {card.subtitle}
                   </p>
                 )}
-                <h3 className="font-montserrat text-xl font-bold text-ug-navy mb-3 leading-tight group-hover:text-ug-institutional transition-colors">
+                <h3 className="font-montserrat text-xl font-bold text-ug-navy dark:text-ug-sky-soft mb-3 leading-tight group-hover:text-ug-institutional dark:group-hover:text-ug-sky transition-colors break-words">
                   {card.title}
                 </h3>
                 {card.description && (
-                  <p className="text-ug-text-secondary text-sm leading-relaxed mb-5">
+                  <p className="text-ug-text-secondary text-sm leading-relaxed mb-5 break-words">
                     <RichText text={card.description} />
                   </p>
                 )}
@@ -124,10 +129,10 @@ function CardsBlock({ section }: { section: CustomSection }) {
                     {card.bullets.map((bullet, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-2 text-ug-text text-sm"
+                        className="flex items-start gap-2 text-ug-text text-sm break-words"
                       >
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-ug-gold shrink-0" />
-                        {bullet}
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-ug-gold dark:bg-ug-gold-bright shrink-0" />
+                        <span className="min-w-0">{bullet}</span>
                       </li>
                     ))}
                   </ul>
@@ -137,7 +142,7 @@ function CardsBlock({ section }: { section: CustomSection }) {
                     <a
                       href={card.buttonHref}
                       {...linkProps(card.buttonHref)}
-                      className="inline-block px-5 py-2 bg-ug-navy text-white text-sm font-semibold rounded-md hover:bg-ug-institutional transition-colors"
+                      className="inline-block px-5 py-2 bg-ug-navy text-white dark:bg-ug-gold dark:text-ug-night text-sm font-semibold rounded-md hover:bg-ug-institutional dark:hover:bg-ug-gold-bright transition-colors break-words"
                     >
                       {card.buttonLabel}
                     </a>
@@ -153,9 +158,12 @@ function CardsBlock({ section }: { section: CustomSection }) {
 }
 
 function CustomSectionBlock({ section }: { section: CustomSection }) {
-  const bg = section.background === "light" ? "bg-ug-light" : "bg-white";
+  const bg =
+    section.background === "light"
+      ? "bg-ug-light dark:bg-ug-slate"
+      : "bg-white dark:bg-ug-night";
   return (
-    <section id={section.id} className={`${bg} py-20 md:py-28 scroll-mt-20`}>
+    <section id={section.id} className={`${bg} py-12 md:py-20 scroll-mt-20`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {section.layoutType === "cards" ? (
           <CardsBlock section={section} />

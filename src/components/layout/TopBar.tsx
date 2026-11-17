@@ -9,10 +9,10 @@ export function TopBar() {
   const settings = labData?.settings;
 
   return (
-    <div className="bg-ug-navy text-white">
+    <div className="bg-ug-navy dark:bg-ug-slate text-white border-b border-transparent dark:border-ug-line">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-8 gap-4">
-          <div className="flex items-center gap-4 text-xs font-medium tracking-wider overflow-x-auto whitespace-nowrap min-w-0">
+        <div className="flex items-center justify-between h-8 gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs font-medium tracking-wider overflow-x-auto whitespace-nowrap min-w-0">
             {(settings?.topBarLinks ?? []).map((link) => (
               <a
                 key={link.id}
@@ -20,7 +20,7 @@ export function TopBar() {
                 {...(isExternalLink(link.href)
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
-                className="text-ug-light hover:text-white transition-colors"
+                className="text-slate-200 hover:text-white dark:hover:text-ug-gold-bright transition-colors"
               >
                 {link.label}
               </a>
@@ -33,7 +33,7 @@ export function TopBar() {
                 {...(isExternalLink(settings.topBarRightHref)
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
-                className="text-ug-light hover:text-white transition-colors"
+                className="text-slate-200 hover:text-white dark:hover:text-ug-gold-bright transition-colors"
               >
                 {settings.topBarRightLabel}
               </a>

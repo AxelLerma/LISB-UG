@@ -53,13 +53,13 @@ export function ImageUploaderField({
   };
 
   return (
-    <div className="space-y-3" data-aspect={aspectRatio} title={placeholderLabel}>
+    <div className="space-y-3 min-w-0" data-aspect={aspectRatio} title={placeholderLabel}>
       {label && (
-        <label className="text-sm font-medium text-ug-text-secondary block">
+        <label className="text-sm font-medium text-ug-text-secondary block break-words">
           {label}
         </label>
       )}
-      <div className="relative aspect-video w-full max-w-md bg-ug-light border-2 border-dashed border-ug-gold rounded-xl overflow-hidden">
+      <div className="relative aspect-video w-full max-w-md bg-ug-light dark:bg-ug-slate border-2 border-dashed border-ug-gold dark:border-ug-gold/60 rounded-xl overflow-hidden">
         {value ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -77,12 +77,12 @@ export function ImageUploaderField({
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="bg-ug-navy text-white px-4 py-2 rounded text-sm font-medium hover:bg-ug-institutional transition-colors disabled:opacity-50"
+          className="bg-ug-navy text-white dark:bg-ug-gold dark:text-ug-night px-4 py-2 rounded text-sm font-medium hover:bg-ug-institutional dark:hover:bg-ug-gold-bright transition-colors disabled:opacity-50"
         >
           {uploading ? "Subiendo…" : "Subir imagen"}
         </button>
@@ -96,23 +96,23 @@ export function ImageUploaderField({
         />
       </div>
 
-      <form onSubmit={handleUrlSubmit} className="flex gap-2">
+      <form onSubmit={handleUrlSubmit} className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
           value={urlInput}
           onChange={(e) => setUrlInput(e.target.value)}
           placeholder="Pegar URL o ruta de imagen…"
-          className="flex-1 px-3 py-2 rounded border border-ug-light text-ug-text text-sm focus:ring-2 focus:ring-ug-gold outline-none"
+          className="flex-1 min-w-0 px-3 py-2 rounded border border-slate-300 dark:border-ug-line bg-white dark:bg-ug-slate text-ug-text placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm focus:ring-2 focus:ring-ug-gold outline-none"
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-ug-navy text-white text-sm font-medium rounded hover:bg-ug-institutional transition-colors"
+          className="px-4 py-2 bg-ug-navy text-white dark:bg-ug-gold dark:text-ug-night text-sm font-medium rounded hover:bg-ug-institutional dark:hover:bg-ug-gold-bright transition-colors"
         >
           Aplicar
         </button>
       </form>
       {value && (
-        <p className="text-xs text-ug-text-secondary truncate max-w-md">
+        <p className="text-xs text-ug-text-secondary break-all max-w-md">
           {value}
         </p>
       )}

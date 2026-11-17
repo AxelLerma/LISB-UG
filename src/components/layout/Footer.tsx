@@ -15,26 +15,26 @@ export function Footer() {
     isExternalLink(href) ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
   return (
-    <footer className="bg-ug-navy border-t-4 border-t-ug-gold text-white">
+    <footer className="bg-ug-navy dark:bg-ug-slate border-t-4 border-t-ug-gold dark:border-t-ug-gold-bright text-white overflow-x-hidden">
       {labData && footer && settings ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 mb-10 md:mb-12">
             {/* Logo institucional */}
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-center text-center min-w-0">
               <LogoMark
                 src={labData.images.logo}
                 alt={`Logo de ${settings.labName}`}
                 className="w-16 h-16 mb-4"
                 tone="light"
               />
-              <p className="text-white/70 text-sm text-center whitespace-pre-line">
+              <p className="text-white/70 text-sm text-center whitespace-pre-line break-words">
                 {footer.description}
               </p>
             </div>
 
             {/* Enlaces del laboratorio */}
-            <div>
-              <h4 className="font-montserrat font-bold text-ug-gold mb-4 uppercase tracking-wider text-sm">
+            <div className="min-w-0">
+              <h4 className="font-montserrat font-bold text-ug-gold dark:text-ug-gold-bright mb-4 uppercase tracking-wider text-sm">
                 {footer.labColumnTitle}
               </h4>
               <ul className="space-y-2">
@@ -43,7 +43,7 @@ export function Footer() {
                     <a
                       href={link.href}
                       {...externalProps(link.href)}
-                      className="text-white/70 text-sm hover:text-white transition-colors"
+                      className="text-white/70 text-sm hover:text-white transition-colors break-words"
                     >
                       {link.label}
                     </a>
@@ -53,8 +53,8 @@ export function Footer() {
             </div>
 
             {/* Enlaces institucionales UG */}
-            <div>
-              <h4 className="font-montserrat font-bold text-ug-gold mb-4 uppercase tracking-wider text-sm">
+            <div className="min-w-0">
+              <h4 className="font-montserrat font-bold text-ug-gold dark:text-ug-gold-bright mb-4 uppercase tracking-wider text-sm">
                 {footer.ugColumnTitle}
               </h4>
               <ul className="space-y-2">
@@ -63,7 +63,7 @@ export function Footer() {
                     <a
                       href={link.href}
                       {...externalProps(link.href)}
-                      className="text-white/70 text-sm hover:text-white transition-colors"
+                      className="text-white/70 text-sm hover:text-white transition-colors break-words"
                     >
                       {link.label}
                     </a>
@@ -75,11 +75,11 @@ export function Footer() {
 
           {/* Franja con aviso de derechos */}
           <div className="border-t border-white/10 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="text-xs text-white/70 text-center md:text-left">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
+              <div className="text-xs text-white/70 text-center md:text-left break-words">
                 © {new Date().getFullYear()} {footer.copyright}
               </div>
-              <div className="text-xs text-white/70 text-center md:text-right">
+              <div className="text-xs text-white/70 text-center md:text-right break-words">
                 {footer.rightNote}
               </div>
             </div>
@@ -90,9 +90,9 @@ export function Footer() {
       )}
 
       {/* Franja inferior institucional con acceso discreto de administración */}
-      <div className="bg-[#001F3F] py-4">
+      <div className="bg-[#001F3F] dark:bg-ug-night py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-white/70 text-center sm:text-left">
+          <p className="text-xs text-white/70 text-center sm:text-left break-words">
             {footer?.bottomStrip ?? ""}
           </p>
           <button

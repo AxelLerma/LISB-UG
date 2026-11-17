@@ -12,7 +12,10 @@ export function RichText({ text, className }: RichTextProps) {
     <span className={className}>
       {parts.map((part, i) =>
         part.length > 4 && part.startsWith("**") && part.endsWith("**") ? (
-          <strong key={i} className="text-ug-navy font-semibold">
+          <strong
+            key={i}
+            className="text-ug-navy dark:text-ug-sky-soft font-semibold"
+          >
             {part.slice(2, -2)}
           </strong>
         ) : (

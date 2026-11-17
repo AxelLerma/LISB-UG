@@ -139,32 +139,32 @@ export function AdminDrawer() {
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-slate-50 flex flex-col"
+      className="fixed inset-0 z-[60] bg-slate-50 dark:bg-ug-night flex flex-col overflow-x-hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Panel de Administración"
     >
-      <div className="bg-ug-navy text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="font-montserrat font-bold text-lg sm:text-xl tracking-tight">
+      <div className="bg-ug-navy dark:bg-ug-slate dark:border-b dark:border-ug-line text-white px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-montserrat font-bold text-base sm:text-xl tracking-tight">
             Editor del sitio LISB-UG
           </h2>
           <p className="text-xs text-white/70">
             {dirty ? "Tienes cambios sin guardar" : "Todo está guardado"}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleDiscard}
             disabled={!dirty || saving}
-            className="px-3 py-2 border border-white/30 text-white text-sm font-semibold rounded hover:bg-white/10 transition-colors disabled:opacity-40"
+            className="px-3 py-2 border border-white/30 text-white text-xs sm:text-sm font-semibold rounded hover:bg-white/10 transition-colors disabled:opacity-40"
           >
             Descartar
           </button>
           <button
             onClick={handleSave}
             disabled={!dirty || saving}
-            className="px-4 py-2 bg-ug-gold text-ug-navy text-sm font-bold rounded hover:bg-white transition-colors disabled:opacity-50"
+            className="px-3 sm:px-4 py-2 bg-ug-gold text-ug-navy dark:text-ug-night text-xs sm:text-sm font-bold rounded hover:bg-white dark:hover:bg-ug-gold-bright transition-colors disabled:opacity-50"
           >
             {saving ? "Guardando…" : "Guardar cambios"}
           </button>
@@ -178,15 +178,16 @@ export function AdminDrawer() {
         </div>
       </div>
 
-      <div className="flex overflow-x-auto bg-white border-b border-slate-200">
+      {/* Pestañas: se desplazan horizontalmente con el dedo */}
+      <div className="flex overflow-x-auto whitespace-nowrap bg-white dark:bg-ug-surface border-b border-slate-200 dark:border-ug-line">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-5 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+            className={`shrink-0 px-4 sm:px-5 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
               activeTab === tab.id
-                ? "border-ug-gold text-ug-navy"
-                : "border-transparent text-ug-text-secondary hover:text-ug-navy"
+                ? "border-ug-gold text-ug-navy dark:text-ug-gold-bright"
+                : "border-transparent text-ug-text-secondary hover:text-ug-navy dark:hover:text-ug-sky-soft"
             }`}
           >
             {tab.label}
@@ -194,8 +195,10 @@ export function AdminDrawer() {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-        <div key={version} className="max-w-5xl mx-auto">
+      {/* Las variantes arbitrarias adaptan a modo oscuro los títulos h4 y los
+          bordes claros que usan algunas pestañas, sin tocar esos archivos. */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 dark:[&_h4]:text-ug-sky-soft dark:[&_.border-slate-200]:border-ug-line">
+        <div key={version} className="max-w-5xl mx-auto min-w-0">
           {activeTab === "general" && <GeneralTab data={draft} patch={patch} />}
           {activeTab === "hero" && <HeroTab data={draft} patch={patch} />}
           {activeTab === "pillars" && <PillarsTab data={draft} patch={patch} />}
@@ -208,10 +211,10 @@ export function AdminDrawer() {
           {activeTab === "contact" && <ContactTab data={draft} patch={patch} />}
           {activeTab === "extra" && <CustomSectionsTab data={draft} patch={patch} />}
 
-          <div className="mt-10 pt-6 border-t border-slate-200">
+          <div className="mt-10 pt-6 border-t border-slate-200 dark:border-ug-line">
             <button
               onClick={handleReset}
-              className="text-sm text-red-600 hover:text-red-700 underline underline-offset-2"
+              className="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 underline underline-offset-2"
             >
               Restaurar el sitio a los valores originales
             </button>

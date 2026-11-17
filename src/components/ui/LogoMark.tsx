@@ -29,7 +29,9 @@ export function LogoMark({
         role="img"
         aria-label={alt}
         className={`flex items-center justify-center rounded-full shrink-0 ${
-          tone === "light" ? "bg-white text-ug-navy" : "bg-ug-navy text-white"
+          tone === "light"
+            ? "bg-white text-ug-navy"
+            : "bg-ug-navy text-white dark:bg-ug-surface dark:text-ug-gold-bright dark:ring-1 dark:ring-ug-line"
         } ${className}`}
       >
         <FlaskConical className="w-1/2 h-1/2" strokeWidth={2} />

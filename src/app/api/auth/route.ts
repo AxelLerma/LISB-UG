@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       token,
       expiresIn: 8 * 60 * 60 * 1000, // 8 horas en ms
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 }

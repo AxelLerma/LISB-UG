@@ -13,20 +13,20 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div
-      className={`mb-10 relative ${className ?? ""}`}
+      className={`mb-8 md:mb-10 relative ${className ?? ""}`}
     >
       <h2
-        className="font-montserrat text-2xl md:text-3xl font-bold text-ug-navy tracking-tight mb-3"
+        className="font-montserrat text-2xl md:text-3xl font-bold text-ug-navy dark:text-ug-sky-soft tracking-tight mb-3 break-words"
       >
         {title}
       </h2>
       {subtitle && (
-        <p className="text-ug-text-secondary text-lg leading-relaxed">
+        <p className="text-ug-text-secondary text-base md:text-lg leading-relaxed">
           {subtitle}
         </p>
       )}
       <div
-        className="w-full h-[4px] bg-ug-gold mt-6 rounded-full"
+        className="w-full h-[4px] bg-ug-gold dark:bg-ug-gold-bright mt-6 rounded-full"
       />
     </div>
   );

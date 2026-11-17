@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       fileName,
       size: buffer.length,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Error al subir el archivo" },
       { status: 500 }

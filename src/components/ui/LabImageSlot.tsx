@@ -30,7 +30,7 @@ export function LabImageSlot({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl border-2 border-dashed border-ug-gold bg-ug-light ${ASPECT_RATIO_CLASSES[aspectRatio]} ${className ?? ""}`}
+      className={`relative overflow-hidden rounded-xl border-2 border-dashed border-ug-gold dark:border-ug-gold/60 bg-ug-light dark:bg-ug-surface ${ASPECT_RATIO_CLASSES[aspectRatio]} ${className ?? ""}`}
       aria-label={placeholderLabel ?? "Contenedor de imagen"}
     >
       {!shouldShowPlaceholder ? (
@@ -44,11 +44,11 @@ export function LabImageSlot({
           loading="lazy"
         />
       ) : (
-        <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+        <div className="flex flex-col items-center justify-center h-full p-4 sm:p-6 text-center">
           <div className="w-12 h-12 rounded-full bg-ug-gold/10 flex items-center justify-center mb-3 border border-ug-gold/30">
-            <ImageIcon className="w-6 h-6 text-ug-gold" strokeWidth={2} />
+            <ImageIcon className="w-6 h-6 text-ug-gold dark:text-ug-gold-bright" strokeWidth={2} />
           </div>
-          <p className="text-sm font-medium text-ug-navy mb-1">
+          <p className="text-sm font-medium text-ug-navy dark:text-ug-sky-soft mb-1 break-words max-w-full">
             {placeholderLabel ?? "Imagen no disponible"}
           </p>
           <p className="text-xs text-ug-text-secondary truncate max-w-[200px]">

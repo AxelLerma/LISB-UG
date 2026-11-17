@@ -46,16 +46,19 @@ export function Publications() {
     }
   };
 
+  const actionClass =
+    "text-ug-institutional dark:text-ug-sky hover:text-ug-navy dark:hover:text-ug-sky-soft font-medium";
+
   return (
-    <section id="publicaciones" className="bg-ug-light py-20 md:py-32 scroll-mt-20">
+    <section id="publicaciones" className="bg-ug-light dark:bg-ug-slate py-12 md:py-20 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap justify-between items-center mb-12">
-          <div>
-            <h2 className="font-montserrat text-3xl font-bold text-ug-navy mb-2">
+        <div className="flex flex-wrap justify-between items-center mb-10 md:mb-12">
+          <div className="min-w-0">
+            <h2 className="font-montserrat text-2xl sm:text-3xl font-bold text-ug-navy dark:text-ug-sky-soft mb-2 break-words">
               {heading.title}
             </h2>
             {heading.subtitle && (
-              <p className="text-ug-text-secondary text-lg">{heading.subtitle}</p>
+              <p className="text-ug-text-secondary text-base sm:text-lg">{heading.subtitle}</p>
             )}
           </div>
         </div>
@@ -65,27 +68,27 @@ export function Publications() {
             Próximamente se publicarán nuestras investigaciones.
           </p>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {sortedPublications.map((pub) => {
               const isCopied = copiedBibtex === pub.id;
               return (
                 <article
                   key={pub.id}
-                  className="bg-white border border-slate-200 rounded-xl p-6 hover:border-ug-gold transition-all duration-200"
+                  className="bg-white dark:bg-ug-surface border border-slate-200 dark:border-ug-line rounded-xl p-4 sm:p-6 hover:border-ug-gold dark:hover:border-ug-gold-bright transition-all duration-200"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 min-w-8 h-8 px-2 rounded bg-ug-navy flex items-center justify-center text-white text-xs font-bold">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 min-w-8 h-8 px-2 rounded bg-ug-navy text-white dark:bg-ug-gold dark:text-ug-night flex items-center justify-center text-xs font-bold">
                       {pub.year || "—"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-montserrat font-bold text-ug-navy text-lg leading-tight mb-2">
+                      <h3 className="font-montserrat font-bold text-ug-navy dark:text-ug-sky-soft text-base sm:text-lg leading-tight mb-2 break-words">
                         {pub.title}
                       </h3>
-                      <p className="text-ug-text-secondary text-sm mb-3">
+                      <p className="text-ug-text-secondary text-sm mb-3 break-words">
                         {formatAuthors(pub.authors)}.
                       </p>
                       {pub.abstract && (
-                        <p className="text-ug-text text-sm leading-relaxed mb-3 line-clamp-3">
+                        <p className="text-ug-text text-sm leading-relaxed mb-3 line-clamp-3 break-words">
                           {pub.abstract}
                         </p>
                       )}
@@ -106,13 +109,14 @@ export function Publications() {
                           </Badge>
                         )}
                       </div>
-                      <div className="flex flex-wrap gap-3 text-sm">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                         {pub.doi && (
                           <a
                             href={`https://doi.org/${pub.doi}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-ug-institutional hover:text-ug-navy font-medium underline underline-offset-2"
+                            title={pub.doi}
+                            className={`${actionClass} underline underline-offset-2 break-all`}
                           >
                             DOI
                           </a>
@@ -122,18 +126,18 @@ export function Publications() {
                             href={pub.pdfUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-ug-institutional hover:text-ug-navy font-medium underline underline-offset-2"
+                            className={`${actionClass} underline underline-offset-2 break-all`}
                           >
                             PDF
                           </a>
                         )}
                         <button
                           onClick={() => handleCopyBibtex(pub)}
-                          className="flex items-center gap-1.5 text-ug-institutional hover:text-ug-navy font-medium"
+                          className={`flex items-center gap-1.5 ${actionClass}`}
                         >
                           {isCopied ? (
                             <>
-                              <Check size={16} className="text-ug-gold" />
+                              <Check size={16} className="text-ug-gold dark:text-ug-gold-bright" />
                               Copiado
                             </>
                           ) : (

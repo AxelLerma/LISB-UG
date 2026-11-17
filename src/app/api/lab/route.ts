@@ -14,7 +14,7 @@ export async function GET() {
   try {
     const data = await labRepository.getAll();
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Error al obtener datos del laboratorio" },
       { status: 500 }
@@ -38,7 +38,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: updated,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Error al actualizar datos del laboratorio" },
       { status: 500 }
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       { error: "Acción no reconocida" },
       { status: 400 }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Error al procesar solicitud" },
       { status: 500 }
