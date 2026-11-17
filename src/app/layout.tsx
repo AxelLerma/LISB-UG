@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { AdminBar } from "@/components/admin/AdminBar";
 import { AdminDrawer } from "@/components/admin/AdminDrawer";
 import { LabProvider } from "@/context/LabContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,25 +44,40 @@ export const metadata: Metadata = {
   ],
 };
 
+// Se ejecuta en el <head>, ANTES de pintar la página, para poner la clase
+// `dark` en <html> según la preferencia guardada (o la del sistema) y evitar
+// el parpadeo claro→oscuro al recargar. La clave "lisb-theme" debe ser la
+// misma que THEME_STORAGE_KEY en src/context/ThemeContext.tsx (no se importa
+// aquí porque ese archivo es un módulo de cliente).
+const THEME_INIT_SCRIPT = `(function(){try{var s=localStorage.getItem("lisb-theme");var d=s==="dark"||(s!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={inter.className}>
+    // suppressHydrationWarning: el script del <head> cambia la clase de <html>
+    // antes de que React hidrate. Es intencional.
+    <html lang="es" className={inter.className} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className={`${inter.variable} ${montserrat.variable} ${jetbrainsMono.variable} antialiased`}>
-        <LabProvider>
-          <TopBar />
-          <Navbar />
-          {children}
-          <Footer />
-          <AdminBar />
-          <AdminDrawer />
-        </LabProvider>
+      <body
+        className={`${inter.variable} ${montserrat.variable} ${jetbrainsMono.variable} antialiased min-h-screen bg-white text-[#1E293B] dark:bg-[#090D16] dark:text-[#F8FAFC] transition-colors duration-200`}
+      >
+        {/* ThemeProvider debe envolver TODO lo que use useTheme() (el Navbar). */}
+        <ThemeProvider>
+          <LabProvider>
+            <TopBar />
+            <Navbar />
+            {children}
+            <Footer />
+            <AdminBar />
+            <AdminDrawer />
+          </LabProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

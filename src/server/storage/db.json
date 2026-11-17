@@ -120,7 +120,7 @@
       "id": "robotica",
       "name": "Robótica",
       "description": "Diseño y desarrollo de sistemas robóticos bio-inspirados para aplicaciones de asistencia, exploración y rehabilitación, integrando sensores, actuadores y algoritmos de control adaptativo.",
-      "image": "/images/pillars/robotica.jpg",
+      "image": "/images/uploads/1794876604589_images__3_.png",
       "badgeLabel": "Robótica",
       "color": "#002E5D",
       "lines": [
@@ -138,7 +138,7 @@
       "id": "electronica",
       "name": "Electrónica",
       "description": "Desarrollo de plataformas electrónicas embebidas, adquisición de bio-señales y circuitos integrados para sistemas inteligentes de bajo consumo y alta precisión.",
-      "image": "/images/pillars/electronica.jpg",
+      "image": "/images/uploads/1794876612736_images__4_.png",
       "badgeLabel": "Electrónica",
       "color": "#00468B",
       "lines": [
@@ -156,7 +156,7 @@
       "id": "neurociencia",
       "name": "Neurociencia",
       "description": "Estudio de señales neurales, interfaces cerebro-computadora y modelado computacional de procesos cognitivos, aplicado a neuroprótesis y neurofeedback.",
-      "image": "/images/pillars/neurociencia.jpg",
+      "image": "/images/uploads/1794876621557_645ca077561af-schema.png",
       "badgeLabel": "Neurociencia",
       "color": "#0284C7",
       "lines": [
