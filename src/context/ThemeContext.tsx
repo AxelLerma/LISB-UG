@@ -29,12 +29,16 @@ function applyTheme(theme: Theme) {
   document.documentElement.classList.toggle("dark", theme === "dark");
 }
 
-function readStoredTheme(): Theme | null {
+// Solo se considera "oscuro" si la persona lo eligió manualmente y quedó
+// guardado. Cualquier otro caso (sin valor, valor inválido o sin acceso a
+// localStorage) es "light". La preferencia del sistema operativo se ignora.
+function readStoredTheme(): Theme {
   try {
-    const value = window.localStorage.getItem(THEME_STORAGE_KEY);
-    return value === "dark" || value === "light" ? value : null;
+    return window.localStorage.getItem(THEME_STORAGE_KEY) === "dark"
+      ? "dark"
+      : "light";
   } catch {
-    return null;
+    return "light";
   }
 }
 
@@ -44,21 +48,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const stored = readStoredTheme();
-    const initial: Theme = stored ?? (media.matches ? "dark" : "light");
+    const initial = readStoredTheme();
     applyTheme(initial);
     setThemeState(initial);
-
-    // Si la persona nunca eligió un tema, se sigue el del sistema en vivo.
-    const onSystemChange = (event: MediaQueryListEvent) => {
-      if (readStoredTheme() !== null) return;
-      const next: Theme = event.matches ? "dark" : "light";
-      applyTheme(next);
-      setThemeState(next);
-    };
-    media.addEventListener("change", onSystemChange);
-    return () => media.removeEventListener("change", onSystemChange);
   }, []);
 
   const setTheme = useCallback((next: Theme) => {

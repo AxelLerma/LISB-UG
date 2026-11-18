@@ -70,11 +70,7 @@
   }
 }
 
-/*
-  Importante: aquí ya NO se redefinen .text-ug-navy, .bg-ug-gold, etc.
-  Tailwind v4 las genera desde @theme, y duplicarlas en @layer utilities
-  hacía que ganaran sobre las variantes dark:.
-*/
+
 @layer utilities {
   .font-montserrat {
     font-family: var(--font-montserrat);

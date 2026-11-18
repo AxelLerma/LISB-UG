@@ -44,12 +44,14 @@ export const metadata: Metadata = {
   ],
 };
 
-// Se ejecuta en el <head>, ANTES de pintar la página, para poner la clase
-// `dark` en <html> según la preferencia guardada (o la del sistema) y evitar
-// el parpadeo claro→oscuro al recargar. La clave "lisb-theme" debe ser la
-// misma que THEME_STORAGE_KEY en src/context/ThemeContext.tsx (no se importa
-// aquí porque ese archivo es un módulo de cliente).
-const THEME_INIT_SCRIPT = `(function(){try{var s=localStorage.getItem("lisb-theme");var d=s==="dark"||(s!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
+// Se ejecuta en el <head>, ANTES de pintar la página. El modo claro es SIEMPRE
+// el tema por defecto: solo se activa la clase `dark` en <html> si la persona
+// eligió manualmente el modo oscuro (guardado en localStorage). Se ignora a
+// propósito la preferencia del sistema (prefers-color-scheme). La clave
+// "lisb-theme" debe ser la misma que THEME_STORAGE_KEY en
+// src/context/ThemeContext.tsx (no se importa aquí porque ese archivo es un
+// módulo de cliente).
+const THEME_INIT_SCRIPT = `(function(){try{document.documentElement.classList.toggle("dark",localStorage.getItem("lisb-theme")==="dark");}catch(e){}})();`;
 
 export default function RootLayout({
   children,
